@@ -1,0 +1,71 @@
+body
+{
+  background:url(../img/login-bg.jpg); background-repeat:no-repeat; background-size:cover;background-attachment: fixed;
+}
+.logo-img
+{
+  padding-top: 20px;
+}
+.form-control-feedback {
+ left: auto;
+ right: 10px; 
+}
+a:hover
+{
+  text-decoration: none;
+}
+.form-control
+{
+  border:none;
+  border-radius: 0px;
+  border-bottom: solid 1px #D7D7D7;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+.login-icon
+{
+
+  margin-top: -60px;
+}
+.panel-heading h2
+{
+  font-weight: 400;
+  padding: 0px;
+  margin: 0px;
+}
+.panel-flat {
+    padding: 20px;
+ }
+ .caption-login 
+ {
+width: 90%;
+margin-right: 5%;
+margin-left: 5%;
+margin-top: 200px;
+
+ }
+ .caption-login  h1
+ {
+  font-weight: 400;
+  color: #FFFFFF;
+  line-height: 50px; 
+  letter-spacing: 1px;
+ }
+
+.signup
+{
+  font-size: 35px;
+  cursor: pointer;
+}
+
+ .btn-ig {
+    color: #fff;
+    background-color: #80bd01;
+    border-color: #87c507;
+}
+.btn-ig:active , .btn-ig:hover, .btn-ig:visited {
+     color: #fff;
+    background-color: #76a711;
+    border-color: #87c507;
+    box-shadow: inset 0px 0px 23px 3px #00000026;
+}   
