@@ -33,10 +33,21 @@ Route::namespace('Auth')->group(function () {
 	});
 });
 
+Route::post('forms/category', 'FormController@category')->name('forms.category');
+Route::post('forms/customer', 'FormController@customer')->name('forms.customer');
+Route::get('forms/{id}/view', 'FormController@view')->name('forms.view');
+Route::get('forms/{id}/data', 'FormController@data')->name('forms.data');
+Route::get('leads/{id}/application', 'LeadController@application')->name('leads.application');
+Route::get('leads/{id}/application/{form}/detail', 'LeadController@detail')->name('leads.detail');
+Route::get('leads/{id}/{lead}/view', 'LeadController@view')->name('leads.view');
+Route::get('leads/{id}/{lead}/data', 'LeadController@data')->name('leads.data');
+Route::post('leads/formdata', 'LeadController@formdata')->name('leads.formdata');
 Route::post('leads/org', 'LeadController@org')->name('leads.org');
 Route::post('leads/user', 'LeadController@user')->name('leads.user');
+Route::post('leads/categories', 'LeadController@categories')->name('leads.categories');
 Route::get('customers', 'LeadController@customers')->name('leads.customers');
 Route::post('leads/getmodal', 'LeadController@getmodal')->name('leads.getmodal');
+Route::put('leads/{id}/status', 'LeadController@status')->name('leads.status');
 Route::post('templates/module', 'TemplateController@module')->name('templates.module');
 Route::post('templates/files', 'TemplateController@files')->name('templates.files');
 Route::post('templates/deleteFile', 'TemplateController@deleteFile')->name('templates.deleteFile');
@@ -54,11 +65,16 @@ Route::resource('visas', 'VisaController');
 Route::resource('socials', 'SocialController');
 Route::resource('templates', 'TemplateController');
 Route::resource('notes', 'NoteController');
+Route::resource('orgnotes', 'OrgNoteController');
 Route::resource('activities', 'ActivityController');
+Route::resource('orgactivities', 'OrgActivityController');
 Route::resource('tasks', 'TaskController');
+Route::resource('orgtasks', 'OrgTaskController');
 Route::prefix('leads/{lead}')->group(function () {
 	Route::resource('invoices', 'InvoiceController');
 });
 
 Route::resource('emaillogs', 'EmailLogController');
+Route::resource('orgemaillogs', 'OrgEmailLogController');
 Route::resource('email-comments', 'EmailLogCommentController');
+Route::resource('orgemail-comments', 'OrgEmailLogCommentController');

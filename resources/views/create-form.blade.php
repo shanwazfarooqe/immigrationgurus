@@ -46,6 +46,9 @@
               <li  title="Drag and drop me to draw Button" class="form_bal_button">
                 <a href="javascript:;">Button <i class="fa fa-plus-circle pull-right"></i></a>
               </li>
+               <li  title="Drag and drop me to draw file" class="form_bal_file">
+                  <a href="javascript:;">File <i class="fa fa-plus-circle pull-right"></i></a>
+              </li>
             </ul>
           </nav>
         </div>
@@ -67,9 +70,46 @@
 
 @section('custom_css')
 <link rel="stylesheet" href="{{ asset('css/form_builder.css') }}"/>
+<style>
+  #add_category {
+    z-index: 9999;
+  }
+  .form_builder ul li {
+  padding: 2px 10px;
+  cursor: pointer;
+  }
+</style>
 @endsection
 
 @section('custom_js')
+
+  <!-- Module modal -->
+  <div class="modal fade" id="add_category">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Add new category</h4>
+        </div>
+        <form action="{{ route('forms.category') }}" method="POST" role="form" class="form-horizontal" id="category-form">
+        @csrf
+          <div class="modal-body">
+            <div class="form-group">
+              <div class="col-sm-12">
+                <label for="">Add Category</label>
+                <input type="text" class="form-control" name="category" placeholder="Type...">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-info">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal -->
   <div class="modal fade" id="myModal2" role="dialog">
     <div class="modal-dialog modal-sm">
@@ -83,9 +123,23 @@
         <form class="form-horizontal" id="form-html" method="post" action="{{ route('forms.store') }}">
         @csrf
         <div class="modal-body">
+            <div class="form-group">
+             <div class="col-sm-12">
+              <label for="name">Select form</label>
+              <div class="input-group m-b">
+                <select  class="form-control" name="category_id" id="category_id">
+                  <option value="">Select</option>
+                  @foreach($categories as $row)
+                    <option value="{{ $row->id }}">{{ $row->name }}</option>
+                  @endforeach
+                </select>
+                <span class="input-group-addon" data-toggle="modal" data-target="#add_category"><em class="fa fa-edit" style="cursor: pointer;"></em></span>
+              </div>
+            </div>
+          </div>
            <div class="form-group">
             <div class="col-sm-12">
-             <label class="control-label">Form name</label>
+             <label class="control-label">Page name/no</label>
              <input type="text" name="title" class="form-control">
              <textarea id="contenthtml" name="content" rows="50" class="form-control hide"></textarea>
              <textarea id="orghtml" name="org_content" rows="50" class="form-control hide"></textarea>
@@ -127,5 +181,25 @@
       @slot('redirect')
         {{ route('forms.index') }}
       @endslot
+  @endcomponent
+
+  <!-- Category Submit -->
+  @component('components.form-submit')
+      @slot('form')
+          category-form
+      @endslot
+
+      if(data.status=="error")
+      {
+        $.notify(data.msg);
+      }
+      else
+      {
+        var category = $('#category-form input[name="category"]').val();
+        $('#category_id').append('<option value="'+data.id+'" selected>'+category+'</option>');
+        $('#add_category').modal('hide');
+        $.notify(data.msg,'success');
+        $('#category-form')[0].reset();
+      }
   @endcomponent
 @endsection

@@ -19,6 +19,7 @@
          <th>Email</th>
          <th>Organization</th>
          <th>Visa type</th>
+         <th>Qualification</th>
          <th style="min-width: 100px;">Action</th>
        </tr>
      </thead>
@@ -39,7 +40,16 @@
           </select>
         </td>
         <td>
-          {{ $row->visa->name }}
+          @if($row->visa_id) {{ $row->visa->name }} @endif
+        </td>
+        <td>
+          @if($row->status==1)
+            Prequalify
+          @elseif($row->status==2)
+            Qualify
+          @else
+            
+          @endif
         </td>
         <td>
           {{-- <a href="{{ route('leads.edit',['id'=>base64_encode($row->id)]) }}" class="btn btn-info btn-xs">Edit</a> --}}

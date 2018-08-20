@@ -286,6 +286,7 @@ class TemplateController extends Controller
         $data['module'] = Module::where('id',base64_decode($id))->first();
 
         $data['templates'] = Template::where('module_id', base64_decode($id))->where('status',1)->latest('id')->get();
+        $data['id'] = base64_decode($id);
         
         return view('email-template',$data);
     }

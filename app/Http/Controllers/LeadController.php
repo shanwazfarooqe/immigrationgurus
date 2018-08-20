@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Activity;
+use App\Category;
 use App\EmailLog;
+use App\FormData;
+use App\FormFile;
 use App\Lead;
+use App\Mail\WelcomeMail;
 use App\Module;
 use App\Note;
 use App\Organization;
@@ -14,6 +18,8 @@ use App\Template;
 use App\User;
 use App\Visa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class LeadController extends Controller
@@ -135,6 +141,7 @@ class LeadController extends Controller
                                 $q->where('status',1)->latest('id');
                             }])->where('company',$this->getCompany())->latest('id')->get();
         $data['email_logs'] = EmailLog::where('lead_id',$id)->where('status',1)->latest('id')->get();
+        $data['categories'] = Category::where('company',$this->getCompany())->latest('id')->get();
 
         return view('show-lead',$data);
     }
@@ -263,5 +270,133 @@ class LeadController extends Controller
         $id = $request->id;
         $template = Template::with('mailtemplate')->find($id);
         echo json_encode($template);
+    }
+
+    public function status(Request $request, $id)
+    {
+        $pwd = str_random(8);
+
+        $data = Lead::find($id);
+        $data->status = $request->status;
+        $data->save();
+
+        $user  = new User;
+        $user->first_name = $data->first_name;
+        $user->last_name = $data->last_name;
+        $user->email = $data->email;
+        $user->phone = $data->phone;
+        $user->address = $data->address;
+        $user->company = $this->getCompany();
+        $user->password = Hash::make($pwd);
+        $user->level = 6;
+        $user->save();
+
+        $user2 = array(
+            'first_name' => $data->first_name,
+            'last_name' => $data->last_name,
+            'phone' => $data->phone,
+            'email' => $data->email,
+            'password' => $pwd,
+            'level' => 6,
+            'address' => $data->address,
+            'company' => $this->getCompany()
+        );
+
+        Mail::to($data->email)->send(new WelcomeMail($user2));
+
+        return redirect()->back()->with('status', 'Status has been updated');
+    }
+
+    public function categories(Request $request)
+    {
+        $data = Lead::find($request->lead_id);
+        $data->category_user = $request->user_id;
+        $data->category_id = json_encode($request->category_id);
+        $data->save();
+
+        return redirect()->back()->with('status', 'Form has been assigned');
+    }
+
+    public function application($id)
+    {
+        $id = base64_decode($id);
+        $lead = Lead::find($id);
+        if(!empty($lead->category_id))
+        {
+            $categories = Category::whereIn('id',json_decode($lead->category_id))->latest('id')->get();
+        }
+        else
+        {
+            $categories = array();
+        }
+        
+        return view('application',compact('categories','id'));
+    }
+
+    public function detail($id,$form)
+    {
+        $id = base64_decode($id);
+        $category = Category::find(base64_decode($form));
+        return view('show-form',compact('category','id'));
+    }
+
+    public function formdata(Request $request)
+    {
+        $unique_id = str_random(8).uniqid();
+
+        $form_id = $request->form_id;
+        $form_data = $request->form_data;
+
+        if(!empty($form_id))
+        {
+            foreach ($form_id as $key => $row) {
+                $data = new FormData;
+                $data->form_id = $form_id[$key];
+                $data->content = $form_data[$key];
+                $data->user_id = auth()->id();
+                $data->unique_id = $unique_id;
+                $data->save();
+            }
+        }
+
+        if($request->hasFile('file'))
+        {
+            foreach ($request->file as $key => $file) {
+                $filename = $file->getClientOriginalName();
+                $path = $file->storeAs('public/uploads/files/',$filename);
+                $files[] = str_replace('public/', 'storage/', $path);
+            }
+
+            $data2 = new FormFile;
+            $data2->category_id = $request->category_id;
+            $data2->files = json_encode($files);
+            $data2->user_id = auth()->id();
+            $data2->unique_id = $unique_id;
+            $data2->save();
+        }
+
+        $ajax['status'] = "success";
+        $ajax['msg'] = "Form data has been created";
+
+        echo json_encode($ajax);
+    }
+
+    public function view($id,$lead)
+    {
+        $id = base64_decode($id);
+        $category = Category::find($id);
+        $formdatas = FormData::where('user_id',base64_decode($lead))->get()->unique('unique_id');
+        return view('form-lead-view',compact('category','formdatas','id'));
+    }
+
+    public function data($id,$lead)
+    {
+        $lead = base64_decode($lead);
+        $formdata = FormData::find(base64_decode($id));
+        $category = $formdata->form->category;
+        $formdatas = FormData::where('unique_id',$formdata->unique_id)->get();
+        $formfiles = FormFile::where('unique_id',$formdata->unique_id)->get();
+
+        return view('data-lead-form',compact('category','formdatas','formfiles','lead'));
     }
 }

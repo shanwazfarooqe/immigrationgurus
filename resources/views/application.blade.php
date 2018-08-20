@@ -4,7 +4,7 @@
 <div class="content-wrapper">
   <div class="content-heading">
      <span><em class="fa fa-file-text-o"></em>  Form list</span> 
-     <div class="pull-right"><a href="{{ route('forms.create') }}" class="btn btn-info btn-sm"><em class="fa fa-file-text-o"></em> Create form </a></div>
+     <div class="pull-right"><a href="{{ route('leads.show',['id'=>base64_encode($id)]) }}" class="btn btn-info btn-sm"><em class="fa fa-file-text-o"></em> Back </a></div>
   </div>
 
   <div class="panel panel-default">
@@ -28,31 +28,23 @@
 
                     </div>
                  </td>
-
-                  <td class="wd-xs hidden-xs hidden-sm">
-                   <div class="ph">
-                     <a href="{{ route('forms.view', ['form'=>base64_encode($row->id)]) }}" class="btn btn-sm btn-purple">
-                       View form
-                     </a>
-                   </div>
-                 </td>
                 
-                {{--  <td class="wd-xs hidden-xs hidden-sm">
+                 <td class="wd-xs hidden-xs hidden-sm">
                    <div class="ph">
-                       <a href="javascript:void(0)" class="btn btn-sm btn-purple">
-                         Edit form
+                       <a href="{{ route('leads.detail', ['id'=>base64_encode($id),'form'=>base64_encode($row->id)]) }}" class="btn btn-sm btn-purple">
+                         Start form
                        </a>
                     </div>
                  </td>
                
                  <td class="wd-xs hidden-xs hidden-sm">
                     <div class="ph">
-                       <a href="javascript:void(0)" class="btn btn-sm btn-green">
-                        Copy form
+                       <a href="{{ route('leads.view', ['form'=>base64_encode($row->id),'id'=>base64_encode($id)]) }}" class="btn btn-sm btn-green">
+                        View form
                        </a>
                     </div>
                  </td>
-                   <td class="wd-xs hidden-xs hidden-sm">
+                   {{-- <td class="wd-xs hidden-xs hidden-sm">
                     <div class="ph">
                        <a href="javascript:void(0)" class="btn btn-sm btn-danger" id="swal-demo4">
                          Delete form

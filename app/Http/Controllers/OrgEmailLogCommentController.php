@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\EmailLogComment;
-use App\Lead;
+use App\OrgEmailLogComment;
+use App\Organization;
 use Illuminate\Http\Request;
 
-class EmailLogCommentController extends Controller
+class OrgEmailLogCommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,9 +42,9 @@ class EmailLogCommentController extends Controller
             'file.*' => 'required'
         ]);
 
-        $data = new EmailLogComment;
+        $data = new OrgEmailLogComment;
         $data->content = $request->content;
-        $data->email_log_id = $request->email_log_id;
+        $data->org_email_log_id = $request->email_log_id;
         $data->user_id = auth()->id();
         if($request->hasFile('file'))
         {
@@ -58,7 +58,7 @@ class EmailLogCommentController extends Controller
         $data->save();
 
         $arr = array(
-            'user' => Lead::find($request->lead_id),
+            'user' => Organization::find($request->organization_id),
             'to' => $request->to,
             'subject' => $request->subject,
             'content' => $request->content,
@@ -108,7 +108,7 @@ class EmailLogCommentController extends Controller
             $st =  1;
         }
 
-        $data = EmailLogComment::find($id);
+        $data = OrgEmailLogComment::find($id);
         $data->status = $st;
         $data->save();
 

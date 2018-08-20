@@ -18,7 +18,7 @@
            <li> <button class="btn btnc btn-primary" data-toggle="modal" data-target="#myModal-create-Template">
              New Templates  <i class="fa fa-object-group"></i></button></li>
             @foreach($modules as $mod)
-             <li><i class="fa fa-angle-right"></i> <a href="{{ route('templates.detail',['id'=>base64_encode($mod->id)]) }}">{{ $mod->name }}<i class="fa icon-people"></i></a></li>
+             <li><i class="fa fa-angle-right"></i> <a href="{{ route('templates.detail',['id'=>base64_encode($mod->id)]) }}" @if(!$id) {{ ($loop->first) ? 'class=tabactive' : '' }} @else {{ ($id==$mod->id) ? 'class=tabactive' : '' }}  @endif>{{ $mod->name }}{{-- <i class="fa icon-people"></i> --}}</a></li>
             @endforeach
            </ul>
          </div>
@@ -132,6 +132,9 @@
    .checkbox-star label {
      cursor: pointer;
      color: #9fb4bd;
+ }
+ a.tabactive {
+  color: #8ec640;
  }
  </style>
 @endsection
@@ -270,7 +273,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submite" class="btn btn-info">Save changes</button>
+          <button type="submit" class="btn btn-info">Save changes</button>
         </div>
       </form>
     </div>

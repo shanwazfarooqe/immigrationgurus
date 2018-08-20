@@ -101,6 +101,11 @@
                         <em class="fa fa-cog"></em>
                      </a>
                   </li>
+                  <li>
+                     <a download href="{{ asset('img/formcopypaster-v2.2.zip') }}">
+                        <em class="fa fa-file-archive-o"></em>
+                     </a>
+                  </li>
                 
                   <li>
                      <a href="{{ route('logout') }}" onclick="event.preventDefault();logOut();">

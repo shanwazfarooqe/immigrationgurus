@@ -25,7 +25,7 @@
          {{ asset('img/logo.png') }}
        @endif
        " alt="logo" style="max-height: 100px;width: auto;" /></div>
-       <div style="float:right;"><h2 style="color: #71bd05;float: left;border-bottom: solid #fff 2px;line-height: 11px;    margin-top: 31px;">INVOICE&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+       <div style="float:right;width:30%"><h2 style="color: #71bd05;border-bottom: solid #fff 2px;line-height: 11px;margin-top: 31px;">INVOICE&nbsp;&nbsp;&nbsp;&nbsp;</h2>
          <p style="color: #71bd05;"> Invoice No : {{ $invoice->invoice_no }}<br /></p>
        </div>
      </div>

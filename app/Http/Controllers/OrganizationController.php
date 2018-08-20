@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Organization;
 use App\Lead;
+use App\Module;
+use App\OrgActivity;
+use App\OrgEmailLog;
+use App\OrgNote;
+use App\OrgTask;
+use App\Organization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -96,9 +101,18 @@ class OrganizationController extends Controller
      */
     public function show($id)
     {
-        $organization = Organization::find(base64_decode($id));
-        $leads = Lead::where('organization_id',base64_decode($id))->latest('id')->get();
-        return view('show-organization',compact('organization','leads'));
+        $data['organization'] = Organization::find(base64_decode($id));
+        $data['leads'] = Lead::where('organization_id',base64_decode($id))->latest('id')->get();
+
+        $data['notes'] = OrgNote::where('organization_id',base64_decode($id))->latest()->get();
+        $data['activities'] = OrgActivity::where('organization_id',base64_decode($id))->latest()->get();
+        $data['tasks'] = OrgTask::where('organization_id',base64_decode($id))->latest()->get();
+        $data['modules'] = Module::with(['templates' => function ($q) {
+                                $q->where('status',1)->latest('id');
+                            }])->where('company',$this->getCompany())->latest('id')->get();
+        $data['email_logs'] = OrgEmailLog::where('organization_id',base64_decode($id))->where('status',1)->latest('id')->get();
+
+        return view('show-organization',$data);
     }
 
     /**

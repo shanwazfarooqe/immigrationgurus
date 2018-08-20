@@ -23,7 +23,7 @@
             </li>
             <li class="mb-md">
               <div class="li-cel col-xs-5"> <em class="icon-paper-plane fa-fw"></em>Visa type </div>
-              <div class="li-cel col-xs-7"> {{ $lead->visa->name }}</div>
+              <div class="li-cel col-xs-7"> @if($lead->visa_id) {{ $lead->visa->name }} @endif</div>
             </li>
             <li class="mb-md">
               <div class="li-cel col-xs-5"> <em class="fa fa-home fa-fw"></em> Address </div>
@@ -40,33 +40,54 @@
       <div class="row">
         <div class="col-xs-2 col-sm-offset-1">
           <div class="icon_box text-center">
-            <!-- <em class="fa fa-clock-o fa-fw panel-color5"></em> -->
+            @if($lead->status >= 1)
             <em class="fa fa-check fa-fw panel-color5"></em>
+            @else
+            <label for="prequalify"><em class="fa fa-clock-o fa-fw panel-color5"></em></label>
+            <input type="checkbox" id="prequalify" class="hide" value="1" onchange="leadStatus({{ $lead->id }})">
+            <form action="{{ route('leads.status',['id'=>$lead->id]) }}" method="post" id="lead-status{{ $lead->id }}">
+            @csrf
+            @method('put')
+            <input type="hidden" name="id" value="{{ $lead->id }}">
+            <input type="hidden" name="status" value="1">
+            </form>
+            @endif
             <p>Prequalify </p>
           </div>
         </div>
         <div class="col-xs-2">
           <div class="icon_box text-center">
+            @if($lead->status >= 2)
             <em class="fa fa-check fa-fw panel-color2"></em>
-            <p>Qualify  </p>
+            @else
+            <label for="qualify"><em class="fa fa-certificate fa-fw panel-color2"></em></label>
+            <input type="checkbox" id="qualify" class="hide" value="2" onchange="leadStatus({{ $lead->id }})">
+            <form action="{{ route('leads.status',['id'=>$lead->id]) }}" method="post" id="lead-status{{ $lead->id }}">
+            @csrf
+            @method('put')
+            <input type="hidden" name="id" value="{{ $lead->id }}">
+            <input type="hidden" name="status" value="2">
+            </form>
+            @endif
+            <p>Qualify</p>
           </div>
         </div>
         <div class="col-xs-2">
           <div class="icon_box text-center">
             <em class="fa fa-file-text-o fa-fw panel-color3"></em>
-            <p>Application  </p>
+            <p>Application </p>
           </div>
         </div>
         <div class="col-xs-2">
           <div class="icon_box text-center">
             <em class="fa fa-paper-plane-o fa-fw panel-color4"></em>
-            <p>Visa launch  </p>
+            <p>Visa launch </p>
           </div>
         </div>
         <div class="col-xs-2">
           <div class="icon_box text-center">
             <em class="fa fa-line-chart fa-fw panel-color1"></em>
-            <p>Result  </p>
+            <p>Result </p>
           </div>
         </div>
 
@@ -99,6 +120,11 @@
           <li role="presentation" id="email_temp"><a href="#email" aria-controls="email" role="tab" data-toggle="tab">
             <em class="fa fa-envelope-o"></em> &nbsp;&nbsp;Email
 
+          </a>
+        </li>
+
+          <li role="presentation" id="forms-assign"><a href="#assign-form" aria-controls="assign-form" role="tab" data-toggle="tab">
+            <em class="fa fa-cog"></em> &nbsp;&nbsp;Form
           </a>
         </li>
 
@@ -271,6 +297,28 @@
               <!-- msg row end -->
 
             </div>
+          </div>
+
+          <div id="assign-form" role="tabpanel" class="tab-pane">
+            <form class="form-horizontal" action="{{ route('leads.categories') }}" method="post">
+            @csrf
+              <input type="hidden" name="lead_id" value="{{ $lead->id }}">
+              <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+              <br>
+                <div class="col-sm-12">
+                  @foreach($categories as $cat)
+                    <div class="form-check checkbox c-checkbox">
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="category_id[]" value="{{ $cat->id }}" @if($lead->category_id) {{ (in_array($cat->id, json_decode($lead->category_id))) ? 'checked' : '' }} @endif>  <span class="fa fa-check"></span>{{ $cat->name }}
+                      </label>
+                    </div>
+                  @endforeach
+                </div>
+          <div class="clearfix"></div>
+              <hr>
+              <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
+              <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
+            </form>
           </div>
 
 
@@ -465,7 +513,7 @@
              </div>
              <div class="col-xs-10">
                <div class="panel-body text-left pd1">
-                <h4 class="mt0">Application <a href="application.html" class="pull-right">
+                <h4 class="mt0">Application <a href="{{ route('leads.application',['lead'=>base64_encode($lead->id)]) }}" class="pull-right">
                  <em class="icon-arrow-right-circle"></em>
                </a></h4>
                <p class="mb0 text-muted"></p>
@@ -1315,6 +1363,16 @@
  @endslot
  @slot('title')
      updateStatus
+ @endslot
+ @endcomponent
+
+ <!-- Status-->
+ @component('components.status-delete-js')
+ @slot('form')
+     lead-status
+ @endslot
+ @slot('title')
+     leadStatus
  @endslot
  @endcomponent
  

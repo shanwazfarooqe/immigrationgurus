@@ -27,7 +27,9 @@ class CreateLeadsTable extends Migration
             $table->integer('company')->nullable()->unsigned();
             $table->text('notes')->nullable();
             $table->string('image')->nullable();
-            $table->boolean('status')->default(1);
+            $table->text('category_id')->nullable();
+            $table->integer('category_user')->nullable()->unsigned();
+            $table->boolean('status')->default(0);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('visa_id')->references('id')->on('visas')->onDelete('cascade');

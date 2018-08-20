@@ -73,7 +73,7 @@
      <div class="row msg_row">
       @if($comm->user_id==Auth::id() && $loop->last)
       <button class="btn btn-default pull-right" onclick="updateStatus({{ $comm->id }})"><i class="fa fa-trash fa-2x text-danger"></i></button>
-      <form action="{{ route('email-comments.update',['id'=>$comm->id]) }}" method="post" id="form-status{{ $comm->id }}" style="display: none;">
+      <form action="{{ route('orgemail-comments.update',['id'=>$comm->id]) }}" method="post" id="form-status{{ $comm->id }}" style="display: none;">
       @csrf
       @method('put')
       <input type="hidden" name="id" value="{{ $comm->id }}">
@@ -133,10 +133,10 @@
 
 
        <div class="panel-body" style="    box-shadow: 0 0 10px #ccc;">
-         <form method="post" action="{{ route('email-comments.store') }}" class="form-horizontal" enctype="multipart/form-data">
+         <form method="post" action="{{ route('orgemail-comments.store') }}" class="form-horizontal" enctype="multipart/form-data">
          @csrf
          <input type="hidden" name="email_log_id" value="{{ $emaillog->id }}">
-         <input type="hidden" name="lead_id" value="{{ $emaillog->lead_id }}">
+         <input type="hidden" name="organization_id" value="{{ $emaillog->organization_id }}">
           <div class="form-group">
             <div class="col-sm-12">
               <label class="control-label">
@@ -157,7 +157,7 @@
 
        <div class="form-group">
         <div class="col-sm-12">
-          <a href="{{ route('leads.show',['id'=>base64_encode($emaillog->lead_id)]) }}" class="btn btn-warning ">Back</a>
+          <a href="{{ route('organizations.show',['id'=>base64_encode($emaillog->organization_id)]) }}" class="btn btn-warning ">Back</a>
           <div class="pull-right">
             <button class="btn btn-info " type="submit">Reply</button>
           </div>  

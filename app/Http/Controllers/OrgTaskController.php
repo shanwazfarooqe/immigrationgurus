@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\EmailLogComment;
-use App\Lead;
+use App\OrgTask;
 use Illuminate\Http\Request;
 
-class EmailLogCommentController extends Controller
+class OrgTaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,36 +35,8 @@ class EmailLogCommentController extends Controller
      */
     public function store(Request $request)
     {
-        $files = array();
-        $request->validate([
-            'content' => 'required',
-            'file.*' => 'required'
-        ]);
-
-        $data = new EmailLogComment;
-        $data->content = $request->content;
-        $data->email_log_id = $request->email_log_id;
-        $data->user_id = auth()->id();
-        if($request->hasFile('file'))
-        {
-            foreach ($request->file as $key => $file) {
-                $filename = $file->getClientOriginalName();
-                $path = $file->storeAs('public/uploads',$filename);
-                $files[] = str_replace('public/', 'storage/', $path);
-            }
-            $data->files = json_encode($files);
-        }
-        $data->save();
-
-        $arr = array(
-            'user' => Lead::find($request->lead_id),
-            'to' => $request->to,
-            'subject' => $request->subject,
-            'content' => $request->content,
-            'regards' => $request->regards
-        );
-
-        return redirect()->back()->with('status', 'Comment has been added');
+        OrgTask::create($request->except('_token'));
+        return redirect()->back()->with('status', 'Task has been created');
     }
 
     /**
@@ -99,20 +70,10 @@ class EmailLogCommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->status==1)
-        {
-            $st =  0;
-        }
-        else
-        {
-            $st =  1;
-        }
-
-        $data = EmailLogComment::find($id);
-        $data->status = $st;
+        $data = OrgTask::find($id);
+        $data->fill($request->except('_token'));
         $data->save();
-
-        return redirect()->back()->with('status', 'Comment has been deleted');
+        return redirect()->back()->with('status', 'Task has been updated');
     }
 
     /**
@@ -123,6 +84,8 @@ class EmailLogCommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = OrgTask::find($id);
+        $data->delete();
+        return redirect()->back()->with('status', 'Data has been deleted');
     }
 }
