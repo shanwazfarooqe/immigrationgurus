@@ -247,7 +247,7 @@
 
               @if(Gate::check('isCompany') || Gate::check('isAdmin'))  
                <li class=" ">
-                   <a href="email.html" title="Email">
+                   <a href="{{ url('/oauth/gmail') }}" title="Email">
                   <em class="fa fa-envelope-o"></em>
                       <span>Email</span>
                    </a>

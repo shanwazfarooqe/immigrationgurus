@@ -18,7 +18,7 @@
            <li> <button class="btn btnc btn-primary" data-toggle="modal" data-target="#myModal-create-Template">
              New Templates  <i class="fa fa-object-group"></i></button></li>
             @foreach($modules as $mod)
-             <li><i class="fa fa-angle-right"></i> <a href="{{ route('templates.detail',['id'=>base64_encode($mod->id)]) }}" @if(!$id) {{ ($loop->first) ? 'class=tabactive' : '' }} @else {{ ($id==$mod->id) ? 'class=tabactive' : '' }}  @endif>{{ $mod->name }}{{-- <i class="fa icon-people"></i> --}}</a></li>
+             <li><i class="fa fa-angle-right"></i> <a href="{{ route('templates.detail',['id'=>base64_encode($mod->id)]) }}" @if(!empty($id)) {{ ($id==$mod->id) ? 'class=tabactive' : '' }}  @else {{ ($loop->first) ? 'class=tabactive' : '' }}  @endif>{{ $mod->name }}{{-- <i class="fa icon-people"></i> --}}</a></li>
             @endforeach
            </ul>
          </div>
