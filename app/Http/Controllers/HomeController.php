@@ -27,6 +27,9 @@ class HomeController extends Controller
         if (Gate::allows('isSuperAdmin')) {
             return redirect('companies');
         }
+        else if (Gate::allows('isCustomer')) {
+            return redirect('dashboard');
+        }
         return view('home');
     }
 }

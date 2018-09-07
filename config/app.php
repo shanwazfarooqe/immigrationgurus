@@ -151,6 +151,7 @@ return [
          * Package Service Providers...
          */
         Dacastro4\LaravelGmail\LaravelGmailServiceProvider::class,
+        Webklex\IMAP\Providers\LaravelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -210,6 +211,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'LaravelGmail' => Dacastro4\LaravelGmail\Facade\LaravelGmail::class,
+        'Client' => Webklex\IMAP\Facades\Client::class,
 
     ],
 

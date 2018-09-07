@@ -150,6 +150,20 @@
                         </div>
                      </div>
                   </li>
+              @if(Gate::check('isCustomer'))    
+              <li class=" ">
+                  <a href="{{ route('customer.index') }}" title="Dashboard">
+                  <em class="fa fa-dashboard"></em>
+                      <span>Dashboard</span>
+                  </a>
+              </li>
+              <li class=" ">
+                  <a href="{{ route('teams.profile') }}" title="Dashboard">
+                  <em class="fa fa-cog"></em>
+                      <span>Settings</span>
+                  </a>
+              </li>
+              @endif
               @if(Gate::check('isCompany') || Gate::check('isAdmin'))    
               <li class=" ">
                   <a href="{{ url('/') }}" title="Dashboard">
@@ -175,14 +189,50 @@
                       </a>
                    </li>
                 </ul>
-               </li> 
+               </li>
 
-                 <li class=" ">
-                   <a href="{{ route('leads.customers') }}" title="Customers">
-                  <em class="fa fa-user"></em>
-                      <span>Customers</span>
-                   </a>
-                </li>
+               <li class="drop-menu">
+                <a href="#Customers" title="Lead" data-toggle="collapse" class="arrow-r">
+                    <em class="fa fa-user"></em>
+                    <span>Customers</span>
+                     <i class="fa fa-angle-down rotate-icon"></i>
+                 </a>
+                 <ul id="Customers" class="nav sidebar-subnav collapse">
+                     <li class=" ">
+                       <a href="{{ route('leads.customers') }}" title="Customers">
+                      
+                          <span>View all</span>
+                       </a>
+                    </li>
+                     <li class=" ">
+                       <a href="{{ route('leads.qualified') }}" title="Qualified">
+                          <span>Qualified customers</span>
+                       </a>
+                    </li>
+                    <li class=" ">
+                       <a href="{{ route('leads.prequalified') }}" title="Prequalified">
+                          <span>Prequalified customers</span>
+                       </a>
+                    </li>
+                    <li class=" ">
+                       <a href="javascript:void(0)" title="Completed Application">
+                          <span>Completed Application</span>
+                       </a>
+                    </li>
+                    <li class=" ">
+                       <a href="javascript:void(0)" title="Visa launched">
+                          <span>Visa launched</span>
+                       </a>
+                    </li>
+                    <li class=" ">
+                       <a href="javascript:void(0)" title="Result">
+                          <span>Result</span>
+                       </a>
+                    </li>
+                 </ul>
+                </li> 
+
+                 
                  <li class="drop-menu">
                <a href="#orgsd" title="Manage organisation" data-toggle="collapse" class="arrow-r">
                     <em class="fa fa-cubes"></em>

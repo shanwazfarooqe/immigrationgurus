@@ -39,7 +39,7 @@
                
                  <td class="wd-xs hidden-xs hidden-sm">
                     <div class="ph">
-                       <a href="{{ route('leads.view', ['form'=>base64_encode($row->id),'id'=>base64_encode($id)]) }}" class="btn btn-sm btn-green">
+                       <a href="{{ route('leads.view', ['id'=>base64_encode($id),'form'=>base64_encode($row->id)]) }}" class="btn btn-sm btn-green">
                         View form
                        </a>
                     </div>

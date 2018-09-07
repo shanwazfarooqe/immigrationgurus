@@ -1037,3 +1037,100 @@ padding: 20px;
 
 }
 
+/* Mail API CSS */
+.mail-h
+{
+  margin-top: 0px;
+  margin-bottom: 35.5px;
+}
+.user-drop {
+    min-width: 231px;
+}
+.card-user {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    margin: auto;
+    text-align: center;
+    font-family: arial;
+}
+.card-user img {
+    border-radius: 100%;
+    width: 99px;
+    height: 100px;
+    background-color: #000;
+}
+.title-user {
+    color: grey;
+    font-size: 18px;
+}
+.button-user {
+    border: none;
+    outline: 0;
+    display: inline-block;
+    padding: 8px;
+    color: white;
+    background-color: #0059aa;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+}
+.button-user:hover
+{
+   color: #fff;
+   background-color: #3b6890;
+}
+.mail-main
+{
+  position: relative;
+}
+.mail-dlt
+{
+    position: absolute;
+    top: 31px;
+    z-index: 1;
+    right: 7px;
+    display: none;
+    color: #b3adad;
+    cursor: pointer;
+}
+.mail-main:hover .mail-dlt
+{
+  display: block;
+}
+.maincontent
+{
+  color: #455f77;
+}
+.maincontent:hover
+{
+  color: #455f77;
+  text-decoration: none;
+}
+.pagination2 {
+    display: inline-block;
+    float: right;
+}
+
+.pagination2 a {
+    color: black;
+    float: left;
+    padding: 3.5px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.pagination2 a.active {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #4CAF50;
+}
+.m-n1
+{
+  margin-top: -12px;
+}
+.pagination2 a:hover:not(.active) {background-color: #ddd;}
+
+

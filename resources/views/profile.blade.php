@@ -72,15 +72,30 @@
          <label class="control-label">Email</label>
          <input type="text" name="email" class="form-control" placeholder="Email" value="{{ Auth::user()->email }}">
        </div>
-     @if(Gate::check('isCompany') || Gate::check('isSuperAdmin')) 
        <div class="col-sm-3">
-        <label class="control-label">
-           Logo
-         </label>
-         <input type="file" name="logo" class="form-control filestyle">
+         <label class="control-label">Phone</label>
+         <input type="text" name="phone" class="form-control" placeholder="Phone" value="{{ Auth::user()->phone }}">
        </div>
-     @endif
+     
      </div>
+
+      <div class="form-group">
+       <div class="col-sm-6 col-sm-offset-3">
+         <label class="control-label">Address</label>
+         <textarea name="address" class="form-control" placeholder="Address">{{ Auth::user()->address }}</textarea>
+      </div>
+     </div>
+
+     @if(Gate::check('isCompany') || Gate::check('isSuperAdmin')) 
+     <div class="form-group">
+      <div class="col-sm-6 col-sm-offset-3">
+       <label class="control-label">
+          Logo
+        </label>
+        <input type="file" name="logo" class="form-control filestyle">
+      </div>
+     </div>
+     @endif
 <hr>
       <div class="form-group">
        <div class="col-sm-4 col-sm-offset-5">

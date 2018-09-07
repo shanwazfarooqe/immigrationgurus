@@ -15,7 +15,13 @@ Route::redirect('/', 'home');
 
 Auth::routes();
 
-Route::view('gmail','email-api');
+Route::get('imap', 'ImapController@index')->name('imap');
+
+Route::get('gmail/{pageToken?}', 'GmailController@index')->name('gmail');
+Route::delete('gmail/trash/{id}', 'GmailController@trash')->name('gmail.trash');
+Route::delete('gmail/delete/{id}', 'GmailController@delete')->name('gmail.delete');
+Route::delete('gmail/deleteAll', 'GmailController@deleteAll')->name('gmail.deleteAll');
+Route::delete('gmail/trashAll', 'GmailController@trashAll')->name('gmail.trashAll');
 
 Route::get('/oauth/gmail', function (){
     return LaravelGmail::redirect();
@@ -54,14 +60,17 @@ Route::post('forms/customer', 'FormController@customer')->name('forms.customer')
 Route::get('forms/{id}/view', 'FormController@view')->name('forms.view');
 Route::get('forms/{id}/data', 'FormController@data')->name('forms.data');
 Route::get('leads/{id}/application', 'LeadController@application')->name('leads.application');
+Route::get('leads/{id}/decision', 'LeadController@decision')->name('leads.decision');
 Route::get('leads/{id}/application/{form}/detail', 'LeadController@detail')->name('leads.detail');
-Route::get('leads/{id}/{lead}/view', 'LeadController@view')->name('leads.view');
+Route::get('leads/{id}/{form}/view', 'LeadController@view')->name('leads.view');
 Route::get('leads/{id}/{lead}/data', 'LeadController@data')->name('leads.data');
 Route::post('leads/formdata', 'LeadController@formdata')->name('leads.formdata');
 Route::post('leads/org', 'LeadController@org')->name('leads.org');
 Route::post('leads/user', 'LeadController@user')->name('leads.user');
 Route::post('leads/categories', 'LeadController@categories')->name('leads.categories');
 Route::get('customers', 'LeadController@customers')->name('leads.customers');
+Route::get('qualified-customers', 'LeadController@qualified')->name('leads.qualified');
+Route::get('prequalified-customers', 'LeadController@prequalified')->name('leads.prequalified');
 Route::post('leads/getmodal', 'LeadController@getmodal')->name('leads.getmodal');
 Route::put('leads/{id}/status', 'LeadController@status')->name('leads.status');
 Route::post('templates/module', 'TemplateController@module')->name('templates.module');
@@ -91,6 +100,12 @@ Route::prefix('leads/{lead}')->group(function () {
 });
 
 Route::resource('emaillogs', 'EmailLogController');
+Route::resource('decemaillogs', 'DecEmailLogController');
 Route::resource('orgemaillogs', 'OrgEmailLogController');
 Route::resource('email-comments', 'EmailLogCommentController');
+Route::resource('decemail-comments', 'DecEmailLogCommentController');
 Route::resource('orgemail-comments', 'OrgEmailLogCommentController');
+
+//Customer Routes
+
+Route::get('dashboard', 'CustomerController@index')->name('customer.index');

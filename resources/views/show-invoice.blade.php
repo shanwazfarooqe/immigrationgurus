@@ -7,7 +7,9 @@
   <span><em class="fa fa-file-text-o"></em> Invoice </span> 
   <div class="pull-right">
     <a href="{{ route('invoices.index',['lead'=>base64_encode($invoice->lead_id)]) }}" class="btn btn-info btn-lg">Back to invoice</a>
+    @if(!Gate::check('isCustomer'))
     <button class="btn btn-info btn-lg" data-toggle="modal" data-target="#recdr_payment"><em class="fa fa-file-text-o"></em> Record a Payment</button>
+    @endif
   </div>
 </div>
 <div style="width:80%;margin-left:10%;border:solid #CCC .5px;min-height:500px;overflow:hidden;background-color:#FFF;box-shadow:1px 1px 50px #D9D9D9;" class="main">
@@ -33,14 +35,14 @@
    <div style="clear:both;"></div>
    <hr>
    <div style="width:94%;margin-left:3%;margin-right:3%;margin-top:20px;">
-     <div  style="float:left;">
+     <div  style="float:left;width:50%;">
       <p>From ,</p>
       <p style="font-size:14px;color:#666;line-height:25px;">
        {{ $company->company_name }}<br>
        {{ nl2br($company->address) }}
      </p>
    </div>
-   <div style="float:right;text-align:right;">
+   <div style="float:right;text-align:right;width:50%;">
      <p>To ,</p>
      <p style="font-size:14px;color:#666;line-height:25px;">
 

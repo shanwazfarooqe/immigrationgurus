@@ -73,7 +73,7 @@
      <div class="row msg_row">
       @if($comm->user_id==Auth::id() && $loop->last)
       <button class="btn btn-default pull-right" onclick="updateStatus({{ $comm->id }})"><i class="fa fa-trash fa-2x text-danger"></i></button>
-      <form action="{{ route('email-comments.update',['id'=>$comm->id]) }}" method="post" id="form-status{{ $comm->id }}" style="display: none;">
+      <form action="{{ route('decemail-comments.update',['id'=>$comm->id]) }}" method="post" id="form-status{{ $comm->id }}" style="display: none;">
       @csrf
       @method('put')
       <input type="hidden" name="id" value="{{ $comm->id }}">
@@ -133,9 +133,9 @@
 
 
        <div class="panel-body" style="    box-shadow: 0 0 10px #ccc;">
-         <form method="post" action="{{ route('email-comments.store') }}" class="form-horizontal" enctype="multipart/form-data">
+         <form method="post" action="{{ route('decemail-comments.store') }}" class="form-horizontal" enctype="multipart/form-data">
          @csrf
-         <input type="hidden" name="email_log_id" value="{{ $emaillog->id }}">
+         <input type="hidden" name="dec_email_log_id" value="{{ $emaillog->id }}">
          <input type="hidden" name="lead_id" value="{{ $emaillog->lead_id }}">
           <div class="form-group">
             <div class="col-sm-12">
@@ -157,11 +157,7 @@
 
        <div class="form-group">
         <div class="col-sm-12">
-          @if(Gate::check('isCustomer'))
-          <a href="{{ route('customer.index') }}" class="btn btn-warning ">Back</a>
-          @else
-          <a href="{{ route('leads.show',['id'=>base64_encode($emaillog->lead_id)]) }}" class="btn btn-warning ">Back</a>
-          @endif
+          <a href="{{ route('leads.decision',['id'=>base64_encode($emaillog->lead_id)]) }}" class="btn btn-warning ">Back</a>
           <div class="pull-right">
             <button class="btn btn-info " type="submit">Reply</button>
           </div>  

@@ -45,5 +45,9 @@ class AuthServiceProvider extends ServiceProvider
         $gate->define('isUser', function($user){
             return $user->level == 5;
         });
+
+        $gate->define('isCustomer', function($user){
+            return $user->level == 6;
+        });
     }
 }

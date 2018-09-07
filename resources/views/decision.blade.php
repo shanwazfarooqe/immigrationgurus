@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="content-wrapper">
-
+    <div class="pull-right"><a href="{{ route('leads.show',['id'=>base64_encode($lead->id)]) }}" class="btn btn-info btn-sm"><em class="fa fa-file-text-o"></em> Back </a></div>
   <div class="row">
-    <div class="col-sm-9">
+    <div class="col-sm-12">
      <div class="panel panel-default panel_user">
        <div class="panel-body" style="position: relative;">
         <div class="row row-table">
@@ -44,13 +44,7 @@
             <em class="fa fa-check fa-fw panel-color5"></em>
             @else
             <label for="prequalify"><em class="fa fa-clock-o fa-fw panel-color5"></em></label>
-            <input type="checkbox" id="prequalify" class="hide" value="1" onchange="leadStatus({{ $lead->id }})">
-            <form action="{{ route('leads.status',['id'=>$lead->id]) }}" method="post" id="lead-status{{ $lead->id }}">
-            @csrf
-            @method('put')
-            <input type="hidden" name="id" value="{{ $lead->id }}">
-            <input type="hidden" name="status" value="1">
-            </form>
+            <input type="checkbox" id="prequalify" class="hide" value="1">
             @endif
             <p>Prequalify </p>
           </div>
@@ -61,15 +55,7 @@
             <em class="fa fa-check fa-fw panel-color2"></em>
             @else
             <label for="qualify"><em class="fa fa-certificate fa-fw panel-color2"></em></label>
-
-              <input type="checkbox" id="qualify" class="hide" value="2" @if($lead->user_id) onchange="leadStatus({{ $lead->id }})" @else onchange="swal('Warning','Please assign this lead to a user','warning')"  @endif>
-              <form action="{{ route('leads.status',['id'=>$lead->id]) }}" method="post" id="lead-status{{ $lead->id }}">
-              @csrf
-              @method('put')
-              <input type="hidden" name="id" value="{{ $lead->id }}">
-              <input type="hidden" name="status" value="2">
-              </form>
-              
+            <input type="checkbox" id="qualify" class="hide" value="2">
             @endif
             <p>Qualify</p>
           </div>
@@ -95,135 +81,17 @@
 
       </div>
 
-      <div class="acti_deacti">
+      {{-- <div class="acti_deacti">
         <button class="btn btn-sm btn-success">Active</button>
       </div>
-
+ --}}
     </div>
   </div>
 
   <div class="panel panel-default">
     
     <div class="panel-body">
-      <div role="tabpanel" style="background-color:#FFFFFF">
-        <!-- Nav tabs-->
 
-        <ul role="tablist" class="nav nav-tabs nav-tabs_custome">
-          <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
-            <i class="icon-note"></i> &nbsp;&nbsp;New note </a>
-          </li>
-          <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
-            <em class="fa fa-plus"></em> &nbsp;&nbsp;Log activity</a>
-          </li>
-          <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
-            <em class="icon-share-alt"></em> &nbsp;&nbsp;Create task</a>
-          </li>
-
-          <li role="presentation" id="email_temp"><a href="#email" aria-controls="email" role="tab" data-toggle="tab">
-            <em class="fa fa-envelope-o"></em> &nbsp;&nbsp;Email
-
-          </a>
-        </li>
-
-          <li role="presentation" id="forms-assign"><a href="#assign-form" aria-controls="assign-form" role="tab" data-toggle="tab">
-            <em class="fa fa-cog"></em> &nbsp;&nbsp;Form
-          </a>
-        </li>
-
-      </ul>
-
-      <!-- Tab panes-->
-
-      <div class="tab-content" style="background-color:#FFFFFF">
-        <div id="home" role="tabpanel" class="tab-pane active">
-          <form class="form-horizontal" action="{{ route('notes.store') }}" method="post">
-          @csrf
-            <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-            <textarea class="form-control" rows="8"  placeholder="Start typing to leave a note ......." style="border:none;margin-top:15px;" required="" name="content"></textarea>
-
-            <hr>
-            <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-            <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-          </form>
-
-        </div>
-        <div id="profile" role="tabpanel" class="tab-pane">
-          <form class="form-horizontal" action="{{ route('activities.store') }}" method="post">
-          @csrf
-            <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-            <div class="row" style="margin-top:15px;">
-              <div class="btn-group col-md-2">
-                <select class="form-control" name="log_a_call">
-                   <option>Log a call
-                   </option>
-                   <option>Log an email
-                   </option>
-                   <option>Log a meeting
-                   </option>
-                </select>
-              </div>
-
-              <div class="btn-group col-md-2">
-                <select class="form-control" name="out_come">
-                   <option>No answer
-                   </option>
-                   <option>Busy
-                   </option>
-                   <option>Wrong number
-                   </option>
-                    <option>Left live message
-                   </option>
-                    <option>Left voice call
-                   </option>
-                    <option>Connected
-                   </option>
-                </select>
-              </div>
-              <div class="col-md-4 pull-right">
-                <div id="" class="input-group date datetimepicker1">
-                  <input type="text" class="form-control" style="border:none; background-color:#FFFFFF" name="datetime" value="{{ date('d/m/Y H:i:s') }}">
-                  <span class="input-group-addon" style="border:none; background-color:#FFFFFF">
-                    <span class="fa fa-calendar"></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <textarea class="form-control" rows="8"  placeholder="Describe the call ......." style="border:none;margin-top:15px;" name="content"></textarea>
-            <hr>
-            <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-            <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-          </form>
-        </div>
-        <div id="messages" role="tabpanel" class="tab-pane">
-          <form class="form-horizontal" action="{{ route('tasks.store') }}" method="post">
-          @csrf
-            <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-            <div class="row" style="margin-top:15px;">
-              <div class="col-md-8">
-                <input type="text" placeholder="Enter your task ..." style="border:none;" class="form-control" name="subject" required="">
-              </div>
-              <div class="col-md-4 pull-right">
-                <div id="" class="input-group date datetimepicker1">
-                  <input type="text" class="form-control" value="{{ date('d/m/Y H:i:s') }}" style="border:none; background-color:#FFFFFF" name="datetime">
-                  <span class="input-group-addon" style="border:none; background-color:#FFFFFF">
-                    <span class="fa fa-calendar"></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <hr>
-            <textarea class="form-control" rows="8"  placeholder="Notes ..." style="border:none;margin-top:15px;" name="content" required=""></textarea>
-
-            <hr>
-            <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-            <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-          </form>
-        </div>
-
-        <div id="email" role="tabpanel" class="tab-pane">
           <div class="row">
             <div class="tab_msg col-sm-3">
 
@@ -298,38 +166,13 @@
               @endforeach
               <!-- msg row end -->
 
-            </div>
           </div>
-
-          <div id="assign-form" role="tabpanel" class="tab-pane">
-            <form class="form-horizontal" action="{{ route('leads.categories') }}" method="post">
-            @csrf
-              <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-              <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-              <br>
-                <div class="col-sm-12">
-                  @foreach($categories as $cat)
-                    <div class="form-check checkbox c-checkbox">
-                      <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" name="category_id[]" value="{{ $cat->id }}" @if($lead->category_id) {{ (in_array($cat->id, json_decode($lead->category_id))) ? 'checked' : '' }} @endif>  <span class="fa fa-check"></span>{{ $cat->name }}
-                      </label>
-                    </div>
-                  @endforeach
-                </div>
-          <div class="clearfix"></div>
-              <hr>
-              <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-              <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-            </form>
-          </div>
-
-
-        </div>
 
       </div>
     </div>
 
   </div>
+</div>
 
 <div class="row" id="view_topic_table">
   <div class="col-sm-12">
@@ -351,10 +194,10 @@
           @foreach($email_logs as $row)
             <tr>
              <td>{{ $row->created_at->format('d-m-Y h:i:s a') }}</td>
-             <td><a href="{{ route('emaillogs.show',['id'=>base64_encode($row->id)]) }}">{{ $row->subject }}</a></td>
+             <td><a href="{{ route('decemaillogs.show',['id'=>base64_encode($row->id)]) }}">{{ $row->subject }}</a></td>
              <td>{{ $row->user->first_name }} {{ $row->user->last_name }}</td>
              <td><button class="btn btn-default" @if($row->user_id==Auth::id()) onclick="updateStatus({{ $row->id }})" @else disabled="" @endif><i class="fa fa-trash fa-2x text-danger"></i></button> </td>
-             <form action="{{ route('emaillogs.update',['id'=>$row->id]) }}" method="post" id="form-status{{ $row->id }}" style="display: none;">
+             <form action="{{ route('decemaillogs.update',['id'=>$row->id]) }}" method="post" id="form-status{{ $row->id }}" style="display: none;">
              @csrf
              @method('put')
              <input type="hidden" name="id" value="{{ $row->id }}">
@@ -376,254 +219,8 @@
 </div>
 </div>    
 
-
-<ul class="timeline">
-@foreach($notes as $row)
- <!-- timeline item-->
- <li style="margin-right:1% !important;">
-  <div class="timeline-badge warning" style="background-color:#1A3755">
-   <em class="icon-envelope-letter"></em>
- </div>
- <div class="timeline-panel">
-   <div class="popover right">
-     <div class="popover-title" style="color:#182429;background-color:#FFF; border-bottom:#CECECE .5px solid; height:40px;">
-      <span class="pull-right"><a href="#" data-toggle="modal" data-target="#noteModal" data-action="{{ route('notes.update',['id'=>$row->id]) }}" data-content="{{ $row->content }}">Edit</a>&nbsp;&nbsp;<a  href="javascript:void(0)" onclick="deleteNote({{ $row->id }})">Delete</a></span>
-      <form action="{{ route('notes.destroy',['id'=>$row->id]) }}" method="post" id="note-delete{{ $row->id }}" style="display: none;">
-      @csrf
-      @method('delete')
-      <input type="hidden" name="id" value="{{ $row->id }}">
-      <button class="btn btn-danger" type="submit">Delete</button>
-      </form>
-    </div>
-      <div class="arrow"></div>
-      <div class="popover-content">
-       <div class="row">
-         <div class="col-md-1"><i class="icon-note" style="font-size:25px"></i> </div>
-         <div class="col-md-11">{{ $row->content }}<br>
-           <span style="color:#81A6B1; font-size:12px; font-weight:100">{{ $row->updated_at->format('F jS, Y \a\t h:i a') }}</span>
-         </div>
-       </div>
-     </div>
-   </div>
- </div>
-</li>
-@endforeach
-@foreach($activities as $row)
-<!-- timeline item-->
-<li style="margin-right:1% !important;">
-  <div class="timeline-badge warning" style="background-color:#1A3755">
-   <em class="icon-envelope-letter"></em>
- </div>
- <div class="timeline-panel">
-   <div class="popover right">
-     <div class="popover-title" style="color:#182429;background-color:#FFF; border-bottom:#CECECE .5px solid; height:40px;">
-
-       <span class="pull-right"><a href="#" data-toggle="modal" data-target="#logModal" data-action="{{ route('activities.update',['id'=>$row->id]) }}" data-content="{{ $row->content }}" data-log_a_call="{{ $row->log_a_call }}" data-out_come="{{ $row->out_come }}" data-datetime="{{ $row->datetime }}">Edit</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="deleteActivity({{ $row->id }})">Delete</a></span>
-       <form action="{{ route('activities.destroy',['id'=>$row->id]) }}" method="post" id="activity-delete{{ $row->id }}" style="display: none;">
-       @csrf
-       @method('delete')
-       <input type="hidden" name="id" value="{{ $row->id }}">
-       <button class="btn btn-danger" type="submit">Delete</button>
-       </form>
-     </div>
-       <div class="arrow"></div>
-       <div class="popover-content">
-         <div class="row">
-           <div class="col-md-1"><i class="fa fa-plus" style="font-size:25px"></i> </div>
-           <div class="col-md-11">
-             <h5>Call outcome : {{ $row->out_come }} </h5>
-             {{ $row->content }}<br>
-             <span style="color:#81A6B1; font-size:12px; font-weight:100">{{ $row->datetime->format('F jS, Y \a\t h:i a') }}</span>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
- </li>
- @endforeach
- @foreach($tasks as $row)
- <!-- timeline item-->
- <li style="margin-right:1% !important;">
-  <div class="timeline-badge warning" style="background-color:#1A3755">
-   <em class="icon-envelope-letter"></em>
- </div>
- <div class="timeline-panel">
-   <div class="popover right">
-     <div class="popover-title" style="color:#182429;background-color:#FFF; border-bottom:#CECECE .5px solid; height:40px;">
-      <span class="pull-left"><h4>{{ $row->subject }}</h4></span>
-      <span class="pull-right"><a href="#" data-toggle="modal" data-target="#taskModal" data-action="{{ route('tasks.update',['id'=>$row->id]) }}" data-content="{{ $row->content }}" data-subject="{{ $row->subject }}" data-datetime="{{ $row->datetime }}">Edit</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="deleteTask({{ $row->id }})">Delete</a></span>
-      <form action="{{ route('tasks.destroy',['id'=>$row->id]) }}" method="post" id="task-delete{{ $row->id }}" style="display: none;">
-      @csrf
-      @method('delete')
-      <input type="hidden" name="id" value="{{ $row->id }}">
-      <button class="btn btn-danger" type="submit">Delete</button>
-      </form>
-    </div>
-      <div class="arrow"></div>
-      <div class="popover-content">
-       <div class="row">
-         <div class="col-md-1"><i class="icon-share-alt" style="font-size:25px"></i> </div>
-         <div class="col-md-11">
-          {{ $row->content }}<br>
-          <span style="color:#81A6B1; font-size:12px; font-weight:100">{{ $row->datetime->format('F jS, Y \a\t h:i a') }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</li>
-@endforeach
-<!-- START timeline item-->
-<li class="timeline-end" >
-  <a href="javascript:void(0)" class="timeline-badge" style="background-color:#1A3755">
-   <em class="fa fa-plus"></em>
- </a>
-</li>
-<!-- END timeline item-->
-</ul>
-
-
-
 </div>
 
-
-<div class="col-sm-3">
-  <div style="margin-top: 44px;">
-
-         <!--   <div class="panel widget widg_c">
-             <div class="row row-table row-flush">
-                <div class="col-xs-2 rightmenu_f text-center">
-                   <em class="fa fa-comments fa-2x" style="color:#73ca79"></em>
-                </div>
-                <div class="col-xs-10">
-                   <div class="panel-body text-left pd1">
-                      <h4 class="mt0">Start communication 
-                        <a href="start-communication.html" class="pull-right">
-                   <em class="icon-arrow-right-circle "></em>
-                </a></h4>
-                    
-                   </div>
-                </div>
-             </div>
-           </div> -->
-
-           <!-- row  end -->
-           <div class="panel widget widg_c">
-             <div class="row row-table row-flush">
-              <div class="col-xs-2 rightmenu_f text-center">
-               <canvas class="loader4"></canvas>
-             </div>
-             <div class="col-xs-10">
-               <div class="panel-body text-left pd1">
-                <h4 class="mt0">Application <a href="{{ route('leads.application',['lead'=>base64_encode($lead->id)]) }}" class="pull-right">
-                 <em class="icon-arrow-right-circle"></em>
-               </a></h4>
-               <p class="mb0 text-muted"></p>
-             </div>
-           </div>
-         </div>
-       </div>
-
-       <!-- row  end -->
-       {{-- <div class="panel widget widg_c">
-         <div class="row row-table row-flush">
-          <div class="col-xs-2 rightmenu_f text-center">
-           <em class="fa fa-file-text-o fa-2x" style="color:#3dbace"></em>
-         </div>
-         <div class="col-xs-10">
-           <div class="panel-body text-left pd1">
-            <h4 class="mt0">Invoice
-              <a href="{{ route('invoices.index',['lead'=>base64_encode($lead->id)]) }}" class="pull-right">
-               <em class="icon-arrow-right-circle "></em>
-             </a><br>
-             <small></small>
-           </h4>
-
-         </div>
-       </div>
-     </div>
-   </div> --}}
-   <!-- row  end -->
-
-   <div class="panel widget widg_c">
-     <div class="row row-table row-flush">
-      <div class="col-xs-2 rightmenu_f text-center">
-       <em class="fa fa-calendar-minus-o fa-2x" style="color: #f7735e"></em>
-     </div>
-     <div class="col-xs-10">
-       <div class="panel-body text-left pd1">
-        <h4 class="mt0">Lorem Ipsum <a href="javascript:void(0)" class="pull-right">
-         <em class="icon-arrow-right-circle"></em>
-       </a></h4>
-       <p class="mb0 text-muted"></p>
-     </div>
-   </div>
- </div>
-</div>
-<!-- row  end -->
-<div class="panel widget widg_c">
- <div class="row row-table row-flush">
-  <div class="col-xs-2 rightmenu_f text-center">
-   <em class="fa fa-balance-scale fa-2x" style="color: #f1c448"></em>
- </div>
- <div class="col-xs-10">
-   <div class="panel-body text-left pd1">
-    <h4 class="mt0">Decision<a href="{{ route('leads.decision',['lead'=>base64_encode($lead->id)]) }}" class="pull-right">
-     <em class="icon-arrow-right-circle"></em>
-   </a></h4>
-   <p class="mb0 text-muted"></p>
- </div>
-</div>
-</div>
-</div>
-<!-- row  end -->
-
-<div class="panel widget widg_c">
- <div class="row row-table row-flush">
-    <div class="col-xs-2 rightmenu_f text-center">
-       <em class="fa fa-file-text-o fa-2x" style="color:#3dbace"></em>
-    </div>
-    <div class="col-xs-10">
-      @foreach($invoices as $row)
-      @php
-        $subtot = array();
-        $paytot = array();
-      @endphp
-      @foreach($row->services as $srv)
-        @php
-          $subtot[] = $srv->hrs * $srv->rate;
-        @endphp
-      @endforeach
-      @foreach($row->payment_records as $pr)
-         @php
-           $paytot[] = $pr->amount;
-         @endphp
-       @endforeach
-       @if( (array_sum($subtot) - array_sum($paytot) > 0) )
-       <div class="panel-body text-left pd1 pd2">
-          <h4 class="mt0">Invoice  <span class="label label-danger">Pending  <em class="fa fa-close mr"></em></span><a href="{{ route('invoices.index',['lead'=>base64_encode($lead->id)]) }}" class="pull-right in-li"><em class="icon-arrow-right-circle "></em></a><br>
-    <small>No : {{ $row->invoice_no }} / {{ $row->updated_at->format('d/m/Y') }} / $ {{ array_sum($subtot) }}</small>
-    </h4>
-        
-       </div>
-       @endif
-      @endforeach
-
-      @if($invoices->count()===0)
-         <div class="panel-body text-left pd1 pd2">
-            <h4 class="mt0">Invoice  <a href="{{ route('invoices.index',['lead'=>base64_encode($lead->id)]) }}" class="pull-right in-li"><em class="icon-arrow-right-circle "></em></a>
-      </h4>
-          
-         </div>
-      @endif
-
-    </div>
- </div>
-</div>
-
-
-</div>
-</div>
 </div>
 
 </div>
@@ -667,7 +264,7 @@
 <div class="modal fade" id="email_modal" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form method="post" action="{{ route('emaillogs.store') }}" class="form-horizontal" id="email-modal-edit">
+      <form method="post" action="{{ route('decemaillogs.store') }}" class="form-horizontal" id="email-modal-edit">
       @csrf
       <input type="hidden" name="lead_id" value="{{ $lead->id }}">
       <input type="hidden" name="template_id">
@@ -864,7 +461,7 @@
 <div class="modal fade" id="email_modal_add" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form method="post" action="{{ route('emaillogs.store') }}" class="form-horizontal" id="email-modal-add">
+      <form method="post" action="{{ route('decemaillogs.store') }}" class="form-horizontal" id="email-modal-add">
       @csrf
       <input type="hidden" name="lead_id" value="{{ $lead->id }}">
         <div class="modal-header">
@@ -1357,7 +954,7 @@
             type:'success'
           },
           function(isConfirm){
-             location.href="{{ route('leads.show',['id'=>base64_encode($lead->id)]) }}";
+             location.href="{{ route('leads.decision',['id'=>base64_encode($lead->id)]) }}";
            });
        }
      });
@@ -1394,7 +991,7 @@
             type:'success'
           },
           function(isConfirm){
-             location.href="{{ route('leads.show',['id'=>base64_encode($lead->id)]) }}";
+             location.href="{{ route('leads.decision',['id'=>base64_encode($lead->id)]) }}";
            });
        }
      });

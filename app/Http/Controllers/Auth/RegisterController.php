@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Lead;
 use App\Mail\WelcomeMail;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -225,6 +226,8 @@ class RegisterController extends Controller
             'first_name' => 'required|string|max:191',
             'last_name' => 'required|string|max:191',
             'email' => 'required|email|unique:users,email,'.$request->id,
+            'phone' => 'required|string',
+            'address' => 'nullable|string|max:191',
             'logo' => 'file|image|mimes:jpeg,bmp,png'
         ];
 
@@ -250,11 +253,24 @@ class RegisterController extends Controller
             $user->first_name = $request->first_name;
             $user->last_name = $request->last_name;
             $user->email = $request->email;
+            $user->phone = $request->phone;
+            $user->address = $request->address;
             if($request->hasFile('logo'))
             {
                 $user->logo = $path;
             }
             $user->save();
+
+            if (Gate::allows('isCustomer'))
+            {
+                $lead= Lead::where('email',$request->email)->first();
+                $lead->first_name = $request->first_name;
+                $lead->last_name = $request->last_name;
+                $lead->email = $request->email;
+                $lead->phone = $request->phone;
+                $lead->address = $request->address;
+                $lead->save();
+            }
 
             $ajax['status'] = "success";
             $ajax['msg'] = "Profile has been updated";
@@ -314,6 +330,13 @@ class RegisterController extends Controller
                 $user= User::find($request->id);
                 $user->image = $path;
                 $user->save();
+
+                if (Gate::allows('isCustomer'))
+                {
+                    $lead= Lead::where('email',$user->email)->first();
+                    $lead->image = $path;
+                    $lead->save();
+                }
 
                 $ajax['status'] = "success";
                 $ajax['file'] = $path;

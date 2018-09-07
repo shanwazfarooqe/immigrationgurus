@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Activity;
 use App\Category;
+use App\DecEmailLog;
 use App\EmailLog;
+use App\Form;
 use App\FormData;
 use App\FormFile;
+use App\Invoice;
 use App\Lead;
 use App\Mail\WelcomeMail;
 use App\Module;
@@ -18,6 +21,7 @@ use App\Template;
 use App\User;
 use App\Visa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -142,6 +146,7 @@ class LeadController extends Controller
                             }])->where('company',$this->getCompany())->latest('id')->get();
         $data['email_logs'] = EmailLog::where('lead_id',$id)->where('status',1)->latest('id')->get();
         $data['categories'] = Category::where('company',$this->getCompany())->latest('id')->get();
+        $data['invoices'] = Invoice::where('lead_id',$id)->latest('id')->get();
 
         return view('show-lead',$data);
     }
@@ -265,6 +270,22 @@ class LeadController extends Controller
         return view('customers',$data);
     }
 
+    public function qualified()
+    {
+        $data['organizations'] = Organization::where('company',$this->getCompany())->latest()->get();
+        $data['leads'] = Lead::where('company',$this->getCompany())->whereNotNull('user_id')->where('status',2)->latest()->get();
+
+        return view('customers',$data);
+    }
+
+    public function prequalified()
+    {
+        $data['organizations'] = Organization::where('company',$this->getCompany())->latest()->get();
+        $data['leads'] = Lead::where('company',$this->getCompany())->whereNotNull('user_id')->where('status',1)->latest()->get();
+
+        return view('customers',$data);
+    }
+
     public function getmodal(Request $request)
     {
         $id = $request->id;
@@ -280,29 +301,34 @@ class LeadController extends Controller
         $data->status = $request->status;
         $data->save();
 
-        $user  = new User;
-        $user->first_name = $data->first_name;
-        $user->last_name = $data->last_name;
-        $user->email = $data->email;
-        $user->phone = $data->phone;
-        $user->address = $data->address;
-        $user->company = $this->getCompany();
-        $user->password = Hash::make($pwd);
-        $user->level = 6;
-        $user->save();
+        $usercheck = User::where('email',$data->email)->first();
 
-        $user2 = array(
-            'first_name' => $data->first_name,
-            'last_name' => $data->last_name,
-            'phone' => $data->phone,
-            'email' => $data->email,
-            'password' => $pwd,
-            'level' => 6,
-            'address' => $data->address,
-            'company' => $this->getCompany()
-        );
+        if(!$usercheck && $request->status==2)
+        {
+            $user  = new User;
+            $user->first_name = $data->first_name;
+            $user->last_name = $data->last_name;
+            $user->email = $data->email;
+            $user->phone = $data->phone;
+            $user->address = $data->address;
+            $user->company = $this->getCompany();
+            $user->password = Hash::make($pwd);
+            $user->level = 6;
+            $user->save();
 
-        Mail::to($data->email)->send(new WelcomeMail($user2));
+            $user2 = array(
+                'first_name' => $data->first_name,
+                'last_name' => $data->last_name,
+                'phone' => $data->phone,
+                'email' => $data->email,
+                'password' => $pwd,
+                'level' => 6,
+                'address' => $data->address,
+                'company' => $this->getCompany()
+            );
+
+            Mail::to($data->email)->send(new WelcomeMail($user2));
+        }
 
         return redirect()->back()->with('status', 'Status has been updated');
     }
@@ -331,6 +357,18 @@ class LeadController extends Controller
         }
         
         return view('application',compact('categories','id'));
+    }
+
+    public function decision($id)
+    {
+        $id = base64_decode($id);
+        $data['lead'] = Lead::find($id);
+        $data['modules'] = Module::with(['templates' => function ($q) {
+                                $q->where('status',1)->latest('id');
+                            }])->where('company',$this->getCompany())->latest('id')->get();
+        $data['email_logs'] = DecEmailLog::where('lead_id',$id)->where('status',1)->latest('id')->get();
+        
+        return view('decision',$data);
     }
 
     public function detail($id,$form)
@@ -381,12 +419,27 @@ class LeadController extends Controller
         echo json_encode($ajax);
     }
 
-    public function view($id,$lead)
+    public function view($id,$form)
     {
+        $cat_id = base64_decode($form);
         $id = base64_decode($id);
-        $category = Category::find($id);
-        $formdatas = FormData::where('user_id',base64_decode($lead))->get()->unique('unique_id');
-        return view('form-lead-view',compact('category','formdatas','id'));
+        $category = Category::find($cat_id);
+        $form = Form::where('category_id',$cat_id)->get();
+        $form_id = array();
+        foreach ($form as $value) {
+            $form_id[] = $value->id;
+        }
+
+        //dd(base64_decode($id));
+
+        $formdatas = FormData::whereIn('form_id',$form_id)->get()->unique('unique_id');
+
+        if (Gate::allows('isCustomer'))
+        {
+            $formdatas = FormData::whereIn('form_id',$form_id)->where('user_id',auth()->id())->get()->unique('unique_id');
+        }
+
+        return view('form-lead-view',compact('category','formdatas','cat_id','id'));
     }
 
     public function data($id,$lead)

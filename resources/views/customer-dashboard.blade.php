@@ -7,9 +7,12 @@
     <div class="col-sm-9">
      <div class="panel panel-default panel_user">
        <div class="panel-body" style="position: relative;">
+        <div class="edit_box">
+          <a href="{{ route('teams.profile') }}"><em class="fa fa-edit"></em></a>
+        </div>
         <div class="row row-table">
          <div class="col-xs-5 div_user_img">
-          <img src="{{ (file_exists(asset($lead->image))) ? asset($lead->image) : asset('img/user/8.jpg') }}" alt="Image" class="img-circle thumb170">
+          <img src="{{ (file_exists($lead->image)) ? asset($lead->image) : asset('img/user/8.jpg') }}" alt="Image" class="img-circle thumb170">
           <div class="user_names">{{ $lead->first_name }} {{ $lead->last_name }}</div>
         </div>
         <div class="col-xs-7">
@@ -95,247 +98,23 @@
 
       </div>
 
-      <div class="acti_deacti">
+      {{-- <div class="acti_deacti">
         <button class="btn btn-sm btn-success">Active</button>
-      </div>
+      </div> --}}
 
     </div>
   </div>
 
-  <div class="panel panel-default">
-    
-    <div class="panel-body">
-      <div role="tabpanel" style="background-color:#FFFFFF">
-        <!-- Nav tabs-->
-
-        <ul role="tablist" class="nav nav-tabs nav-tabs_custome">
-          <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">
-            <i class="icon-note"></i> &nbsp;&nbsp;New note </a>
-          </li>
-          <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
-            <em class="fa fa-plus"></em> &nbsp;&nbsp;Log activity</a>
-          </li>
-          <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
-            <em class="icon-share-alt"></em> &nbsp;&nbsp;Create task</a>
-          </li>
-
-          <li role="presentation" id="email_temp"><a href="#email" aria-controls="email" role="tab" data-toggle="tab">
-            <em class="fa fa-envelope-o"></em> &nbsp;&nbsp;Email
-
-          </a>
-        </li>
-
-          <li role="presentation" id="forms-assign"><a href="#assign-form" aria-controls="assign-form" role="tab" data-toggle="tab">
-            <em class="fa fa-cog"></em> &nbsp;&nbsp;Form
-          </a>
-        </li>
-
-      </ul>
-
-      <!-- Tab panes-->
-
-      <div class="tab-content" style="background-color:#FFFFFF">
-        <div id="home" role="tabpanel" class="tab-pane active">
-          <form class="form-horizontal" action="{{ route('notes.store') }}" method="post">
-          @csrf
-            <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-            <textarea class="form-control" rows="8"  placeholder="Start typing to leave a note ......." style="border:none;margin-top:15px;" required="" name="content"></textarea>
-
-            <hr>
-            <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-            <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-          </form>
-
-        </div>
-        <div id="profile" role="tabpanel" class="tab-pane">
-          <form class="form-horizontal" action="{{ route('activities.store') }}" method="post">
-          @csrf
-            <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-            <div class="row" style="margin-top:15px;">
-              <div class="btn-group col-md-2">
-                <select class="form-control" name="log_a_call">
-                   <option>Log a call
-                   </option>
-                   <option>Log an email
-                   </option>
-                   <option>Log a meeting
-                   </option>
-                </select>
-              </div>
-
-              <div class="btn-group col-md-2">
-                <select class="form-control" name="out_come">
-                   <option>No answer
-                   </option>
-                   <option>Busy
-                   </option>
-                   <option>Wrong number
-                   </option>
-                    <option>Left live message
-                   </option>
-                    <option>Left voice call
-                   </option>
-                    <option>Connected
-                   </option>
-                </select>
-              </div>
-              <div class="col-md-4 pull-right">
-                <div id="" class="input-group date datetimepicker1">
-                  <input type="text" class="form-control" style="border:none; background-color:#FFFFFF" name="datetime" value="{{ date('d/m/Y H:i:s') }}">
-                  <span class="input-group-addon" style="border:none; background-color:#FFFFFF">
-                    <span class="fa fa-calendar"></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <textarea class="form-control" rows="8"  placeholder="Describe the call ......." style="border:none;margin-top:15px;" name="content"></textarea>
-            <hr>
-            <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-            <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-          </form>
-        </div>
-        <div id="messages" role="tabpanel" class="tab-pane">
-          <form class="form-horizontal" action="{{ route('tasks.store') }}" method="post">
-          @csrf
-            <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-            <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-            <div class="row" style="margin-top:15px;">
-              <div class="col-md-8">
-                <input type="text" placeholder="Enter your task ..." style="border:none;" class="form-control" name="subject" required="">
-              </div>
-              <div class="col-md-4 pull-right">
-                <div id="" class="input-group date datetimepicker1">
-                  <input type="text" class="form-control" value="{{ date('d/m/Y H:i:s') }}" style="border:none; background-color:#FFFFFF" name="datetime">
-                  <span class="input-group-addon" style="border:none; background-color:#FFFFFF">
-                    <span class="fa fa-calendar"></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <hr>
-            <textarea class="form-control" rows="8"  placeholder="Notes ..." style="border:none;margin-top:15px;" name="content" required=""></textarea>
-
-            <hr>
-            <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-            <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-          </form>
-        </div>
-
-        <div id="email" role="tabpanel" class="tab-pane">
-          <div class="row">
-            <div class="tab_msg col-sm-3">
-
-
-
-              <ul class="side-list" style="-webkit-padding-start: 20px;">
-                <li> <a href="#" class="btn btnc btn-primary" data-toggle="modal" data-target="#email_modal_add" >
-                  New email  <i class="fa fa-envelope-o"></i></a></li>
-
-                  @foreach($modules as $mod)
-                   <li><i class="fa fa-angle-right"></i> <a href="javascript:void(0)" onclick="mail(event, 'id{{ $mod->id }}')" class="tablinks" @if($loop->first) id="defaultOpen" @endif>{{ $mod->name }}</a> </li>
-                  @endforeach
-
-                </ul>
-
-              </div>
-
-              @foreach($modules as $mod)
-              <!-- msg row start -->
-              <div id="id{{ $mod->id }}" class="tabcontent_msg col-sm-9">
-
-                <table class="table table-hover mb-mails">
-                  <thead>
-                    <tr>
-                      <th colspan="3"> {{ $mod->name }}</th>
-                      <th class="text-center" style="min-width: 110px">MODIFIED BY</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($mod->templates as $row)
-                    <!-- ngRepeat: mail in mails | filter:folder-->
-                    <tr>
-                      <td>
-                        {{-- <div class="checkbox c-checkbox">
-                          <label>
-                            <input type="checkbox" checked="">
-                            <span class="fa fa-check"></span>
-                          </label>
-                        </div> --}}
-                      </td>
-
-                      <td class="text-center checkbox-star attachment_icon attachment_icon">
-                        <input type="checkbox" id="starhalf{{ $row->id }}" @if($row->user_id==Auth::id() && $row->favorite==1) checked="" @endif />
-                        <label class="half" for="starhalf{{ $row->id }}">
-                          <em class="fa fa-star"></em>
-                        </label>
-
-
-                      </td>
-                      <td>
-                        <div class="mb-mail-meta profile-pic">
-                          <div class="pull-left">
-                            <div class="mb-mail-subject" data-id="{{ $row->id }}" data-toggle="modal" data-target="#email_modal">{{ $row->name }}</div>
-                          </div>
-                          <div class="mb-mail-preview">{{ $row->subject }}</div>
-
-                        </div>
-                      </td>
-                      <td class="text-center">
-                        <div class="mb-mail-from"> {{ $row->user->first_name }} {{ $row->user->last_name }}</div>
-                        <small>{{ $row->updated_at }}</small>
-                      </td>
-
-                    </tr>
-                    <!-- end ngRepeat: mail in mails | filter:folder-->
-                    @endforeach
-
-                  </tbody>
-                </table>
-
-              </div>
-              @endforeach
-              <!-- msg row end -->
-
-            </div>
-          </div>
-
-          <div id="assign-form" role="tabpanel" class="tab-pane">
-            <form class="form-horizontal" action="{{ route('leads.categories') }}" method="post">
-            @csrf
-              <input type="hidden" name="lead_id" value="{{ $lead->id }}">
-              <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-              <br>
-                <div class="col-sm-12">
-                  @foreach($categories as $cat)
-                    <div class="form-check checkbox c-checkbox">
-                      <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input" name="category_id[]" value="{{ $cat->id }}" @if($lead->category_id) {{ (in_array($cat->id, json_decode($lead->category_id))) ? 'checked' : '' }} @endif>  <span class="fa fa-check"></span>{{ $cat->name }}
-                      </label>
-                    </div>
-                  @endforeach
-                </div>
-          <div class="clearfix"></div>
-              <hr>
-              <button type="Submit" class="mb-sm btn btn-success btn-outline" style="margin:10px;">Save</button>
-              <button type="reset" class="mb-sm btn btn-warning btn-outline" style="margin:10px;">Discard</button>
-            </form>
-          </div>
-
-
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-<div class="row" id="view_topic_table">
+<div class="row">
   <div class="col-sm-12">
     <div class="panel panel-default">
      <div class="panel-body">
 
+      <div class="row" style="padding-bottom: 15px;">
+        <div class="col-sm-12">
+          <a href="#" class="btn btn-sm btn-info pull-right" data-toggle="modal" data-target="#email_modal_add">Message to agent</a>
+        </div>
+      </div>
 
        <div class="table-responsive">
          <table class="table table-striped table-hover">
@@ -353,13 +132,14 @@
              <td>{{ $row->created_at->format('d-m-Y h:i:s a') }}</td>
              <td><a href="{{ route('emaillogs.show',['id'=>base64_encode($row->id)]) }}">{{ $row->subject }}</a></td>
              <td>{{ $row->user->first_name }} {{ $row->user->last_name }}</td>
-             <td><button class="btn btn-default" @if($row->user_id==Auth::id()) onclick="updateStatus({{ $row->id }})" @else disabled="" @endif><i class="fa fa-trash fa-2x text-danger"></i></button> </td>
+            {{--  <td><button class="btn btn-default" @if($row->user_id==Auth::id()) onclick="updateStatus({{ $row->id }})" @else disabled="" @endif><i class="fa fa-trash fa-2x text-danger"></i></button> </td>
              <form action="{{ route('emaillogs.update',['id'=>$row->id]) }}" method="post" id="form-status{{ $row->id }}" style="display: none;">
              @csrf
              @method('put')
              <input type="hidden" name="id" value="{{ $row->id }}">
              <input type="hidden" name="status" value="{{ $row->status }}">
-             </form>
+             </form> --}}
+             <td><a href="{{ route('emaillogs.show',['id'=>base64_encode($row->id)]) }}" class="btn btn-xs btn-purple">Read more</a></td>
            </tr>
           @endforeach
           @if (count($email_logs) === 0)
@@ -375,114 +155,6 @@
  </div>
 </div>
 </div>    
-
-
-<ul class="timeline">
-@foreach($notes as $row)
- <!-- timeline item-->
- <li style="margin-right:1% !important;">
-  <div class="timeline-badge warning" style="background-color:#1A3755">
-   <em class="icon-envelope-letter"></em>
- </div>
- <div class="timeline-panel">
-   <div class="popover right">
-     <div class="popover-title" style="color:#182429;background-color:#FFF; border-bottom:#CECECE .5px solid; height:40px;">
-      <span class="pull-right"><a href="#" data-toggle="modal" data-target="#noteModal" data-action="{{ route('notes.update',['id'=>$row->id]) }}" data-content="{{ $row->content }}">Edit</a>&nbsp;&nbsp;<a  href="javascript:void(0)" onclick="deleteNote({{ $row->id }})">Delete</a></span>
-      <form action="{{ route('notes.destroy',['id'=>$row->id]) }}" method="post" id="note-delete{{ $row->id }}" style="display: none;">
-      @csrf
-      @method('delete')
-      <input type="hidden" name="id" value="{{ $row->id }}">
-      <button class="btn btn-danger" type="submit">Delete</button>
-      </form>
-    </div>
-      <div class="arrow"></div>
-      <div class="popover-content">
-       <div class="row">
-         <div class="col-md-1"><i class="icon-note" style="font-size:25px"></i> </div>
-         <div class="col-md-11">{{ $row->content }}<br>
-           <span style="color:#81A6B1; font-size:12px; font-weight:100">{{ $row->updated_at->format('F jS, Y \a\t h:i a') }}</span>
-         </div>
-       </div>
-     </div>
-   </div>
- </div>
-</li>
-@endforeach
-@foreach($activities as $row)
-<!-- timeline item-->
-<li style="margin-right:1% !important;">
-  <div class="timeline-badge warning" style="background-color:#1A3755">
-   <em class="icon-envelope-letter"></em>
- </div>
- <div class="timeline-panel">
-   <div class="popover right">
-     <div class="popover-title" style="color:#182429;background-color:#FFF; border-bottom:#CECECE .5px solid; height:40px;">
-
-       <span class="pull-right"><a href="#" data-toggle="modal" data-target="#logModal" data-action="{{ route('activities.update',['id'=>$row->id]) }}" data-content="{{ $row->content }}" data-log_a_call="{{ $row->log_a_call }}" data-out_come="{{ $row->out_come }}" data-datetime="{{ $row->datetime }}">Edit</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="deleteActivity({{ $row->id }})">Delete</a></span>
-       <form action="{{ route('activities.destroy',['id'=>$row->id]) }}" method="post" id="activity-delete{{ $row->id }}" style="display: none;">
-       @csrf
-       @method('delete')
-       <input type="hidden" name="id" value="{{ $row->id }}">
-       <button class="btn btn-danger" type="submit">Delete</button>
-       </form>
-     </div>
-       <div class="arrow"></div>
-       <div class="popover-content">
-         <div class="row">
-           <div class="col-md-1"><i class="fa fa-plus" style="font-size:25px"></i> </div>
-           <div class="col-md-11">
-             <h5>Call outcome : {{ $row->out_come }} </h5>
-             {{ $row->content }}<br>
-             <span style="color:#81A6B1; font-size:12px; font-weight:100">{{ $row->datetime->format('F jS, Y \a\t h:i a') }}</span>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
- </li>
- @endforeach
- @foreach($tasks as $row)
- <!-- timeline item-->
- <li style="margin-right:1% !important;">
-  <div class="timeline-badge warning" style="background-color:#1A3755">
-   <em class="icon-envelope-letter"></em>
- </div>
- <div class="timeline-panel">
-   <div class="popover right">
-     <div class="popover-title" style="color:#182429;background-color:#FFF; border-bottom:#CECECE .5px solid; height:40px;">
-      <span class="pull-left"><h4>{{ $row->subject }}</h4></span>
-      <span class="pull-right"><a href="#" data-toggle="modal" data-target="#taskModal" data-action="{{ route('tasks.update',['id'=>$row->id]) }}" data-content="{{ $row->content }}" data-subject="{{ $row->subject }}" data-datetime="{{ $row->datetime }}">Edit</a>&nbsp;&nbsp;<a href="javascript:void(0)" onclick="deleteTask({{ $row->id }})">Delete</a></span>
-      <form action="{{ route('tasks.destroy',['id'=>$row->id]) }}" method="post" id="task-delete{{ $row->id }}" style="display: none;">
-      @csrf
-      @method('delete')
-      <input type="hidden" name="id" value="{{ $row->id }}">
-      <button class="btn btn-danger" type="submit">Delete</button>
-      </form>
-    </div>
-      <div class="arrow"></div>
-      <div class="popover-content">
-       <div class="row">
-         <div class="col-md-1"><i class="icon-share-alt" style="font-size:25px"></i> </div>
-         <div class="col-md-11">
-          {{ $row->content }}<br>
-          <span style="color:#81A6B1; font-size:12px; font-weight:100">{{ $row->datetime->format('F jS, Y \a\t h:i a') }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</li>
-@endforeach
-<!-- START timeline item-->
-<li class="timeline-end" >
-  <a href="javascript:void(0)" class="timeline-badge" style="background-color:#1A3755">
-   <em class="fa fa-plus"></em>
- </a>
-</li>
-<!-- END timeline item-->
-</ul>
-
-
 
 </div>
 
@@ -546,81 +218,47 @@
    <!-- row  end -->
 
    <div class="panel widget widg_c">
-     <div class="row row-table row-flush">
-      <div class="col-xs-2 rightmenu_f text-center">
-       <em class="fa fa-calendar-minus-o fa-2x" style="color: #f7735e"></em>
-     </div>
-     <div class="col-xs-10">
-       <div class="panel-body text-left pd1">
-        <h4 class="mt0">Lorem Ipsum <a href="javascript:void(0)" class="pull-right">
-         <em class="icon-arrow-right-circle"></em>
-       </a></h4>
-       <p class="mb0 text-muted"></p>
-     </div>
-   </div>
- </div>
-</div>
-<!-- row  end -->
-<div class="panel widget widg_c">
- <div class="row row-table row-flush">
-  <div class="col-xs-2 rightmenu_f text-center">
-   <em class="fa fa-balance-scale fa-2x" style="color: #f1c448"></em>
- </div>
- <div class="col-xs-10">
-   <div class="panel-body text-left pd1">
-    <h4 class="mt0">Decision<a href="{{ route('leads.decision',['lead'=>base64_encode($lead->id)]) }}" class="pull-right">
-     <em class="icon-arrow-right-circle"></em>
-   </a></h4>
-   <p class="mb0 text-muted"></p>
- </div>
-</div>
-</div>
-</div>
-<!-- row  end -->
-
-<div class="panel widget widg_c">
- <div class="row row-table row-flush">
-    <div class="col-xs-2 rightmenu_f text-center">
-       <em class="fa fa-file-text-o fa-2x" style="color:#3dbace"></em>
-    </div>
-    <div class="col-xs-10">
-      @foreach($invoices as $row)
-      @php
-        $subtot = array();
-        $paytot = array();
-      @endphp
-      @foreach($row->services as $srv)
-        @php
-          $subtot[] = $srv->hrs * $srv->rate;
-        @endphp
-      @endforeach
-      @foreach($row->payment_records as $pr)
-         @php
-           $paytot[] = $pr->amount;
-         @endphp
-       @endforeach
-       @if( (array_sum($subtot) - array_sum($paytot) > 0) )
-       <div class="panel-body text-left pd1 pd2">
-          <h4 class="mt0">Invoice  <span class="label label-danger">Pending  <em class="fa fa-close mr"></em></span><a href="{{ route('invoices.index',['lead'=>base64_encode($lead->id)]) }}" class="pull-right in-li"><em class="icon-arrow-right-circle "></em></a><br>
-    <small>No : {{ $row->invoice_no }} / {{ $row->updated_at->format('d/m/Y') }} / $ {{ array_sum($subtot) }}</small>
-    </h4>
-        
+    <div class="row row-table row-flush">
+       <div class="col-xs-2 rightmenu_f text-center">
+          <em class="fa fa-file-text-o fa-2x" style="color:#3dbace"></em>
        </div>
-       @endif
-      @endforeach
+       <div class="col-xs-10">
+         @foreach($invoices as $row)
+         @php
+           $subtot = array();
+           $paytot = array();
+         @endphp
+         @foreach($row->services as $srv)
+           @php
+             $subtot[] = $srv->hrs * $srv->rate;
+           @endphp
+         @endforeach
+         @foreach($row->payment_records as $pr)
+            @php
+              $paytot[] = $pr->amount;
+            @endphp
+          @endforeach
+          @if( (array_sum($subtot) - array_sum($paytot) > 0) )
+          <div class="panel-body text-left pd1 pd2">
+             <h4 class="mt0">Invoice  <span class="label label-danger">Pending  <em class="fa fa-close mr"></em></span><a href="{{ route('invoices.index',['lead'=>base64_encode($lead->id)]) }}" class="pull-right in-li"><em class="icon-arrow-right-circle "></em></a><br>
+       <small>No : {{ $row->invoice_no }} / {{ $row->updated_at->format('d/m/Y') }} / $ {{ array_sum($subtot) }}</small>
+       </h4>
+           
+          </div>
+          @endif
+         @endforeach
 
-      @if($invoices->count()===0)
-         <div class="panel-body text-left pd1 pd2">
-            <h4 class="mt0">Invoice  <a href="{{ route('invoices.index',['lead'=>base64_encode($lead->id)]) }}" class="pull-right in-li"><em class="icon-arrow-right-circle "></em></a>
-      </h4>
-          
-         </div>
-      @endif
+         @if($invoices->count()===0)
+            <div class="panel-body text-left pd1 pd2">
+               <h4 class="mt0">Invoice  <a href="{{ route('invoices.index',['lead'=>base64_encode($lead->id)]) }}" class="pull-right in-li"><em class="icon-arrow-right-circle "></em></a>
+         </h4>
+             
+            </div>
+         @endif
 
+       </div>
     </div>
- </div>
-</div>
-
+   </div>
 
 </div>
 </div>
@@ -658,6 +296,11 @@
     .checkbox-star label {
       cursor: pointer;
       color: #9fb4bd;
+  }
+  .edit_box {
+      position: absolute;
+      right: 36px;
+      font-size: 26px;
   }
   </style>
 @endsection
@@ -879,7 +522,7 @@
             To
           </label>
           <div class="col-sm-9">
-            <input type="text" placeholder="To" value="{{ $lead->email }}" class="form-control b0" name="to" readonly="">
+            <input type="text" placeholder="To" value="{{ $lead->user->email }}" class="form-control b0" name="to" readonly="">
           </div>
           <div class="col-sm-2">
 
@@ -1027,191 +670,6 @@
   });
 </script>
 
-<!-- Note Edit Modal -->
-<div id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModal" aria-hidden="true" class="modal fade">
-  <div class="modal-dialog">
-   <div class="modal-content">
-    <div class="modal-header">
-     <button type="button" data-dismiss="modal" aria-label="Close" class="close">
-      <span aria-hidden="true">×</span>
-    </button>
-    <h4 class="modal-title">Edit note</h4>
-  </div>
-  <form class="form-horizontal" action="#" method="post">
-  @csrf
-  @method('PUT')
-  <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-    <div class="modal-body"> 
-      {{-- <div class="form-group">
-        <div class="col-sm-5">
-         <div class="input-group date datetimepicker1">
-           <input type="text" class="form-control" name="updated_at" id="notedate">
-           <span class="input-group-addon">
-            <span class="fa fa-calendar"></span>
-          </span>
-        </div></div>
-
-      </div> --}}
-      <div class="form-group">
-       <div class="col-sm-12">
-         <textarea class="form-control" rows="3" name="content" placeholder="Notes ..." required=""></textarea>
-       </div>
-     </div>
-   </div>
-   <div class="modal-footer">
-     <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-     <button type="submit" class="btn btn-primary">Save changes</button>
-   </div>
- </form>
-</div>
-</div>
-</div>
-<!-- Edit Note Modal JS-->
-<script>
-  $("#noteModal").on('shown.bs.modal', function (e) {
-      var action = $(e.relatedTarget).data('action');
-      var content = $(e.relatedTarget).data('content');
-      $('#noteModal form').attr('action', action);
-      $('#noteModal [name="content"]').val(content);
-  });
-</script>
-<!-- LogModalEdit -->
-<div id="logModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
-  <div class="modal-dialog">
-   <div class="modal-content">
-    <div class="modal-header">
-     <button type="button" data-dismiss="modal" aria-label="Close" class="close">
-      <span aria-hidden="true">×</span>
-    </button>
-    <h4 class="modal-title">Edit Log</h4>
-  </div>
-  <form method="post" action="#" class="form-horizontal">
-  @csrf
-  @method('PUT')
-  <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-    <div class="modal-body"> 
-      <div class="form-group">
-        <div class="col-sm-4">
-         <div class="input-group date">
-           <input type="text" class="form-control datetimepicker1" name="datetime">
-           <span class="input-group-addon">
-            <span class="fa fa-calendar"></span>
-          </span>
-        </div></div>
-        <div class="btn-group col-sm-4">
-          <select class="form-control" name="log_a_call">
-           <option>Log a call
-           </option>
-           <option>Log an email
-           </option>
-           <option>Log a meeting
-           </option>
-         </select>
-       </div>
-       <div class="btn-group col-sm-4">
-        <select class="form-control" name="out_come">
-         <option>No answer
-         </option>
-         <option>Busy
-         </option>
-         <option>Wrong number
-         </option>
-         <option>Left live message
-         </option>
-         <option>Left voice call
-         </option>
-         <option>Connected
-         </option>
-       </select>
-     </div>
-   </div>
-   <div class="form-group">
-     <div class="col-sm-12">
-       <textarea class="form-control" rows="3" name="content" placeholder="Notes ..." required=""></textarea>
-     </div>
-   </div>
- </div>
- <div class="modal-footer">
-   <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-   <button type="submit" class="btn btn-primary">Save changes</button>
- </div>
-</form>
-</div>
-</div>
-</div>
-<!-- Edit Log Modal JS-->
-<script>
-  $("#logModal").on('shown.bs.modal', function (e) {
-      var action = $(e.relatedTarget).data('action');
-      var content = $(e.relatedTarget).data('content');
-      var log_a_call = $(e.relatedTarget).data('log_a_call');
-      var out_come = $(e.relatedTarget).data('out_come');
-      var datetime = $(e.relatedTarget).data('datetime');
-      $('#logModal form').attr('action', action);
-      $('#logModal [name="content"]').val(content);
-      $('#logModal [name="log_a_call"]').val(log_a_call);
-      $('#logModal [name="out_come"]').val(out_come);
-      $('#logModal [name="datetime"]').val(datetime);
-  });
-</script>
-<!-- TaskModaledit -->
-<div id="taskModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" class="modal fade">
-  <div class="modal-dialog">
-   <div class="modal-content">
-    <div class="modal-header">
-     <button type="button" data-dismiss="modal" aria-label="Close" class="close">
-      <span aria-hidden="true">×</span>
-    </button>
-    <h4 id="myModalLabel" class="modal-title">Edit Task</h4>
-  </div>
-  <form method="post" action="#" class="form-horizontal">
-  @csrf
-  @method('PUT')
-  <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-    <div class="modal-body"> 
-      <div class="form-group">
-        <div class="col-sm-5">
-         <div class="input-group date">
-           <input type="text" class="form-control datetimepicker1" name="datetime" placeholder="07/26/2017 3:53 PM">
-           <span class="input-group-addon">
-            <span class="fa fa-calendar"></span>
-          </span>
-        </div></div>
-
-      </div>
-      <div class="form-group">
-       <div class="col-sm-12">
-        <input type="text" name="subject" placeholder="Enter your task ..." class="form-control" required="">
-      </div>
-    </div>
-    <div class="form-group">
-     <div class="col-sm-12">
-       <textarea class="form-control" rows="3" name="content" placeholder="Notes ..." required=""></textarea>
-     </div>
-   </div>
- </div>
- <div class="modal-footer">
-   <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-   <button type="submit" class="btn btn-primary">Save changes</button>
- </div>
-</form>
-</div>
-</div>
-</div>
-<!-- Edit Task Modal JS-->
-<script>
-  $("#taskModal").on('shown.bs.modal', function (e) {
-      var action = $(e.relatedTarget).data('action');
-      var content = $(e.relatedTarget).data('content');
-      var subject = $(e.relatedTarget).data('subject');
-      var datetime = $(e.relatedTarget).data('datetime');
-      $('#taskModal form').attr('action', action);
-      $('#taskModal [name="content"]').val(content);
-      $('#taskModal [name="subject"]').val(subject);
-      $('#taskModal [name="datetime"]').val(datetime);
-  });
-</script>
-
  <!-- =============== PAGE VENDOR SCRIPTS ===============-->
  <script src="{{ asset('js/bootstrap-filestyle.js') }}"></script>
  <!-- CLASSY LOADER-->
@@ -1244,29 +702,6 @@
  </script>
 
 
- <!-- mail tabs   -->
- <script>
- function mail(evt, cityName) {
-     var i, tabcontent, tablinks;
-     tabcontent = document.getElementsByClassName("tabcontent_msg");
-     for (i = 0; i < tabcontent.length; i++) {
-         tabcontent[i].style.display = "none";
-     }
-     tablinks = document.getElementsByClassName("tablinks");
-     for (i = 0; i < tablinks.length; i++) {
-         tablinks[i].className = tablinks[i].className.replace(" active", "");
-     }
-     document.getElementById(cityName).style.display = "block";
-     evt.currentTarget.className += " active";
- }
-
- // Get the element with id="defaultOpen" and click on it
- document.getElementById("defaultOpen").click();
- </script>
-
-
-
-
  <!-- hidden div for send mail to more  -->
  <div class="loop_dat" style="display: none;">
     <div class="form-group form_m0">
@@ -1278,54 +713,6 @@
  </div>
  </div>
  </div>
-
- <script type="text/javascript">
-   $(document).ready(function() {
-     $('#view_topic_table').hide();
-     $('#mor_eml').click(function() {
-      var M_msg = $('.loop_dat').html();
-       $('.loop_mail').after(M_msg);
-     });
-
- // for hide the  table
-     $('.nav-tabs_custome a').click(function() {
-       $('.timeline').show();
-          $('#view_topic_table').hide();
-     });
-      $('#email_temp a').click(function() {
-         $('.timeline').hide();
-         $('#view_topic_table').show();
-     });
-     
-   });
- </script>
- <!-- TaskDelete-->
- @component('components.status-delete-js')
-   @slot('form')
-       task-delete
-   @endslot
-   @slot('title')
-       deleteTask
-   @endslot
- @endcomponent
- <!-- NoteDelete-->
- @component('components.status-delete-js')
-   @slot('form')
-       note-delete
-   @endslot
-   @slot('title')
-       deleteNote
-   @endslot
- @endcomponent
- <!-- ActivityDelete-->
- @component('components.status-delete-js')
-   @slot('form')
-       activity-delete
-   @endslot
-   @slot('title')
-       deleteActivity
-   @endslot
- @endcomponent
  
  <!-- Mail Template Modal Edit Submit -->
  <script>
@@ -1357,7 +744,7 @@
             type:'success'
           },
           function(isConfirm){
-             location.href="{{ route('leads.show',['id'=>base64_encode($lead->id)]) }}";
+             location.href="{{ route('customer.index') }}";
            });
        }
      });
@@ -1394,7 +781,7 @@
             type:'success'
           },
           function(isConfirm){
-             location.href="{{ route('leads.show',['id'=>base64_encode($lead->id)]) }}";
+             location.href="{{ route('customer.index') }}";
            });
        }
      });

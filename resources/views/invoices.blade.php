@@ -5,7 +5,13 @@
 
   <div class="content-heading">
    <span><em class="fa fa-file-text-o"></em> Invoice </span> 
-   <div class="pull-right"><a href="{{ route('invoices.create',['lead'=>base64_encode($lead)]) }}" class="btn btn-info btn-sm"><em class="fa fa-file-text-o"></em> Create invoice </a></div>
+   <div class="pull-right">
+    @if(Gate::check('isCustomer'))
+    <a href="{{ route('customer.index') }}" class="btn btn-warning btn-sm"><em class="fa fa-file-text-o"></em> Back </a>
+    @else
+    <a href="{{ route('leads.show',['id'=>base64_encode($lead)]) }}" class="btn btn-warning btn-sm"><em class="fa fa-file-text-o"></em> Back </a> <a href="{{ route('invoices.create',['lead'=>base64_encode($lead)]) }}" class="btn btn-info btn-sm"><em class="fa fa-file-text-o"></em> Create invoice </a>
+    @endif
+  </div>
  </div>
 
  <div class="panel panel-default">
@@ -54,7 +60,7 @@
       @if( (array_sum($subtot) - array_sum($paytot) <= 0) )
        <span class="label label-cm pull-right">Paid <em class="fa fa-fw fa-check mr"></em></span>
       @else
-        <span class="label label-danger pull-right">Not paid <em class="fa fa-fw fa-check mr"></em></span>
+        <span class="label label-danger pull-right">Pending <em class="fa fa-fw fa-close mr"></em></span>
       @endif
      </p>
      </div>

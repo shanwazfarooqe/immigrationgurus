@@ -24,7 +24,7 @@
               <div class="form-group">
                 @if(!$loop->first) <button type="button" onclick="formPrev({{ $loop->index }},{{ $loop->index-1 }})" class="btn btn-info">Prev</button> @endif
                 @if($loop->last) 
-                <a href="{{ route('forms.view',['id'=>base64_encode($category->id)]) }}" class="btn btn-info">Finish</a>
+                <a href="{{ route('leads.view',['lead'=>base64_encode($lead),'form'=>base64_encode($category->id)]) }}" class="btn btn-info">Finish</a>
                 @else
                   <button type="button" onclick="formNext({{ $row->id }}, {{ $loop->index }}, {{ $loop->iteration }})" class="btn btn-info">Next</button>
                 @endif
