@@ -22,6 +22,7 @@ Route::delete('gmail/trash/{id}', 'GmailController@trash')->name('gmail.trash');
 Route::delete('gmail/delete/{id}', 'GmailController@delete')->name('gmail.delete');
 Route::delete('gmail/deleteAll', 'GmailController@deleteAll')->name('gmail.deleteAll');
 Route::delete('gmail/trashAll', 'GmailController@trashAll')->name('gmail.trashAll');
+Route::get('gmail/detail/{id}', 'GmailController@detail')->name('gmail.detail');
 
 Route::get('/oauth/gmail', function (){
     return LaravelGmail::redirect();

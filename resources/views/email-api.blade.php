@@ -160,7 +160,7 @@
   <td class="mail-main">
 
     <div class="mb-mail-date pull-right">{{ $filtered->getDate()->diffForHumans() }}</div>
-    <a href="mail-detail.html" class="maincontent">
+    <a href="{{ route('gmail.detail',['id'=>$row['id']]) }}" class="maincontent">
       <div class="mb-mail-meta">
        <div class="pull-left">
         <div class="mb-mail-subject">{{ $filtered->getSubject() }}</div>

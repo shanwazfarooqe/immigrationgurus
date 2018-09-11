@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\EmailLog;
 use App\Lead;
 use Illuminate\Http\Request;
+use Illuminate\Mail\MailServiceProvider;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -99,6 +102,26 @@ class EmailLogController extends Controller
                 'content' => $request->content,
                 'regards' => $request->regards
             );
+
+            // config([
+            //     'mail.host' => 'smtp.gmail.com',
+            //     'mail.port' =>  587,
+            //     'mail.username' =>  'shabana@ishdesigns.com.au',
+            //     'mail.password' =>  'Azmin@g3&ish'
+            // ]);
+
+            Config::set('mail.driver', 'smtp');
+            Config::set('mail.host', 'smtp.gmail.com');
+            Config::set('mail.port', 587);
+            Config::set('mail.username', 'shibilasherin.g3interactive@gmail.com');
+            Config::set('mail.password', 'junior@g3');
+            Config::set('mail.from.address', 'shibilasherin.g3interactive@gmail.com');
+            Config::set('mail.from.name', 'Shabana');
+            Config::set('mail.encryption', 'tls');
+            (new MailServiceProvider(app()))->register();
+
+            $array = Config::get('mail'); 
+            //dd($array);
 
             Mail::send('emails.maillog', compact('arr'), function($message) use($arr, $files){
              $message->to($arr['to'])->subject

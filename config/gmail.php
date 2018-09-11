@@ -37,7 +37,7 @@ return [
 		'modify',
 	],
 
-	'access_type' => 'offline',
+	'access_type' => 'online',
 
 	'approval_prompt' => 'force',
 

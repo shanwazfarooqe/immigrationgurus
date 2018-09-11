@@ -131,4 +131,11 @@ class GmailController extends Controller
             return redirect()->route('gmail')->with('status','Email could not deleted');
         }
     }
+
+    public function detail($id=null)
+    {
+        $filtered = LaravelGmail::message()->get($id);
+        //dd($filtered);
+        return view('email-api-detail',compact('filtered'));
+    }
 }
